@@ -2,8 +2,9 @@
   "name": "scrumptious",
   "version": "1.0.0",
   "description": "Recipe Manager for CS 361",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
