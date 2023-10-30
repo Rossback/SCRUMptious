@@ -12,5 +12,8 @@
     "url": "SCRUMptious"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^27.0.2"
+  }
 }
