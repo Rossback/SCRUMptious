@@ -76,7 +76,8 @@ var recipeArray = []; //store all reciepies
 //ingredientArray.push(ingredient1);
 
 function read_file(){
-  
+
+}  
 function populateRecipies() {
   console.log('hi');
 }
