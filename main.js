@@ -13,9 +13,6 @@ class Recipe {
     this.difficulty = 0;
     this.review = '';
   }
-  myFunction() {
-    console.log('hi');
-  }
 }
 
 class Ingredient {
@@ -25,9 +22,6 @@ class Ingredient {
     this.expiration_date = '';
     this.image = '';
   }
-  myFunction() {
-    console.log('hi');
-  }
 }
 
 class Day {
@@ -36,9 +30,6 @@ class Day {
     this.lunch = new Recipe();
     this.dinner = new Recipe();
     this.date = new Date();
-  }
-  myFunction() {
-    console.log('hi');
   }
 }
 
@@ -52,17 +43,11 @@ class Week {
     this.friday = new Day();
     this.saturday = new Day();
   }
-  myFunction() {
-    console.log('hi');
-  }
 }
 
 class Calendar {
   constructor() {
     this.weeks = [];
-  }
-  myFunction() {
-    console.log('hi');
   }
 }
 
@@ -72,9 +57,6 @@ class Account {
     this.picture = '';
     this.restrictions = [];
     this.allergies = [];
-  }
-  myFunction() {
-    console.log('hi');
   }
 }
 
