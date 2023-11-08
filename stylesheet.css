@@ -1,0 +1,77 @@
+a {
+    color: rgb(0, 120, 0);
+    margin: 1px;
+}
+h1 {
+    color: rgb(0, 50, 20);
+    margin: 1px;
+}
+h2 {
+    color: rgb(0, 60, 60);
+    margin: 1px;
+    border: 5px solid rgb(120, 160, 120);
+    border-radius: 30px;
+    padding: 15px;
+}
+h3 {
+    color: rgb(0, 70, 100);
+    margin: 1px;
+}
+p {
+    color: rgb(0, 80,140);
+    margin: 1px;
+}
+body {
+    background-color: rgb(255, 227, 184);
+    margin: 1px;
+    font-family: 'Comic Sans MS', cursive;
+    min-width: 700px;
+}
+header {
+    color: rgba(0, 0, 0, 50);
+    background-color: rgb(255, 255, 255);
+    margin: 2px;
+    border: rgb(255, 235, 205);
+    border-radius: 30px;
+    text-align: center;
+    padding: 15px;
+}
+main {
+    color: rgba(0, 0, 0, 50);
+    background-color: rgb(255, 255, 255);
+    margin: 2px;
+    border: rgb(255, 235, 205);
+    border-radius: 30px;
+    padding: 15px;
+}
+p {
+    color: rgba(0, 0, 0, 50);
+    background-color: rgb(255, 255, 255);
+    margin: 2px;
+    border: rgb(255, 235, 205);
+    border-radius: 30px;
+    padding: 15px;
+}
+input {
+    /* margin: 0px 10px; */
+}
+nav {
+    background-color: rgb(120, 160, 120);
+    border-radius: 30px;
+    margin: 10px;
+    text-align: center;
+    padding: 15px;
+}
+nav > a {
+    text-decoration: none;
+    background-color: rgb(255, 255, 240);
+    border-radius: 20px;
+    margin: 15px;
+    padding: 10px;
+    transition: all 0.2s;
+}
+nav > a:hover {
+    border-radius: 30px;
+    padding: 20px;
+    margin: 5px;
+}
