@@ -1,5 +1,7 @@
 const { app, BrowserWindow } = require('electron');
 
+//Mark
+//ALL Constructors
 class Recipe {
   constructor() {
     this.instructions = [];
@@ -58,6 +60,47 @@ class Account {
     this.restrictions = [];
     this.allergies = [];
   }
+}
+
+//MARK
+//ALL global variables and functions
+
+const ingredientArray = [];  //store all ingrediants
+let currentAccount = null;  //store current account
+var currentDay = null;  //store the current day
+var recipeArray = []; //store all reciepies
+
+//example to create a new ingrediant will look similar to all constructors
+//const ingredient1 = new Ingredient();
+//ingredient1.name = 'Flour';
+//ingredientArray.push(ingredient1);
+
+function populateRecipies() {
+  console.log('hi');
+}
+function populateIngrediants() {
+  console.log('hi');
+}
+function setCurrentAccount() {
+  console.log('hi');
+}
+function deleteRecipe() {
+  console.log('hi');
+}
+function createRecipe() {
+  console.log('hi');
+}
+function editRecipe() {
+  console.log('hi');
+}
+function createIngrediant() {
+  console.log('hi');
+}
+function deleteIngrediant() {
+  console.log('hi');
+}
+function editIngrediant() {
+  console.log('hi');
 }
 
 const createWindow = () => {
