@@ -82,10 +82,15 @@ function populateIngrediants() {
   console.log('hi');
 }
 function setCurrentAccount() {
-  console.log('hi');
+  const userAccount = new Account();
+  userAccount.username = 'TestUser';
+  userAccount.picture = 'https://cdn.vectorstock.com/i/preview-1x/87/59/gamer-esport-logo-vector-45258759.jpg';
+  self.currentAccount = userAccount;
 }
-function deleteRecipe() {
-  console.log('hi');
+function deleteRecipe(index) {
+  if (index >= 0 && index < recipeArray.length) {
+    recipeArray.splice(index, 1); 
+  }
 }
 function createRecipe() {
   console.log('hi');
@@ -96,11 +101,15 @@ function editRecipe() {
 function createIngrediant() {
   console.log('hi');
 }
-function deleteIngrediant() {
-  console.log('hi');
+function deleteIngrediant(index) {
+  if (index >= 0 && index < ingredientArray.length) {
+    ingredientArray.splice(index, 1); 
+  }
 }
-function editIngrediant() {
-  console.log('hi');
+function editIngrediant(index) {
+  if (index >= 0 && index < ingredientArray.length) {
+    //ingredientArray[index].
+  }
 }
 
 const createWindow = () => {
