@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>ALL Recipes</title>
+  </head>
+  <body>
+    <header>
+        ALL Recipes
+    </header>
+    <main>
+      <div>
+        <table id="table">           
+          <thead>
+            <tr>
+              <th>NAME:</th>
+              <th>Ingrediants:</th>
+              <th>ImageURL:</th>
+              <th>facts:</th>
+              <th>Cuisine:</th>
+              <th>Is favorite:</th>
+              <th>restrictions</th>
+              <th>difficulty</th>
+              <th>review</th>
+              <th>instructions:</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <footer>
+      &copy; SOFTWARE 1 GROUP
+    </footer>
+    <script>
+        console.log("Script loaded");
+        const { ipcRenderer } = require('electron');
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+          console.log("ready");
+          ipcRenderer.send('recipePageReady');
+        });
+
+        const tableBody = document.querySelector('#table tbody');
+      
+        // Listen for the recipe data from the main process
+        ipcRenderer.on('recipeData', (event, recipe) => {
+          console.log('Recipe data received:', recipe);
+          updateTable(recipe);
+        });
+      
+        // Function to update the HTML table with recipe data
+        function updateTable(recipe) {
+          const row = tableBody.insertRow();
+          row.innerHTML = `
+            <td>${recipe.description}</td>
+            <td>${recipe.ingredients.join(', ')}</td>
+            <td>${recipe.image}</td>
+            <td>${recipe.nutrition_facts.join(', ')}</td>
+            <td>${recipe.cuisine}</td>
+            <td>${recipe.favorite}</td>
+            <td>${recipe.restrictions.join(', ')}</td>
+            <td>${recipe.difficulty}</td>
+            <td>${recipe.review}</td>
+            <td>${recipe.instructions.join('<br>')}</td>
+          `;
+        }
+      </script>
+  </body>
+</html>
