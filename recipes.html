@@ -63,8 +63,8 @@
         function updateTable(recipe) {
           const row = tableBody.insertRow();
           row.innerHTML = `
-            <td>${recipe.description}</td>
-            <td>${recipe.ingredients.join(', ')}</td>
+            <td>${recipe.title}</td>
+            <td>${recipe.ingredients[0].name}</td>
             <td>${recipe.image}</td>
             <td>${recipe.nutrition_facts.join(', ')}</td>
             <td>${recipe.cuisine}</td>
