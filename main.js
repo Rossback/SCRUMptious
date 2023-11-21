@@ -68,12 +68,12 @@ class Account {
 //MARK
 //ALL global variables and functions
 
-const ingredientArray = [];  //store all ingrediants
+const ingredientArray = [];  //store all ingredients
 let currentAccount = null;  //store current account
 var currentDay = null;  //store the current day
 var recipeArray = []; //store all reciepies
 
-//example to create a new ingrediant will look similar to all constructors
+//example to create a new ingredient will look similar to all constructors
 //const ingredient1 = new Ingredient();
 //ingredient1.name = 'Flour';
 //ingredientArray.push(ingredient1);
@@ -125,13 +125,13 @@ function read_file(file){
 function populateRecipies() {
   console.log('hi');
 }
-function populateIngrediants() {
+function populateingredients() {
   console.log('hi');
 }
 function setCurrentAccount() {
   const userAccount = new Account();
   userAccount.username = 'TestUser';
-  userAccount.picture = 'https://cdn.vectorstock.com/i/preview-1x/87/59/gamer-esport-logo-vector-45258759.jpg';
+  userAccount.picture = '.jpg';
   self.currentAccount = userAccount;
 }
 function deleteRecipe(index) {
@@ -145,15 +145,15 @@ function createRecipe() {
 function editRecipe() {
   console.log('hi');
 }
-function createIngrediant() {
+function createingredient() {
   console.log('hi');
 }
-function deleteIngrediant(index) {
+function deleteingredient(index) {
   if (index >= 0 && index < ingredientArray.length) {
     ingredientArray.splice(index, 1); 
   }
 }
-function editIngrediant(index) {
+function editingredient(index) {
   if (index >= 0 && index < ingredientArray.length) {
     //ingredientArray[index].
   }
