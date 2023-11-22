@@ -12,7 +12,7 @@ class Recipe {
     this.image = 'path';    
     this.nutrition_facts = [];
     this.cuisine = '';
-    this.favorite = false;
+    this.favorite = 0;
     this.restrictions = [];
     this.difficulty = 0;
     this.review = '';
@@ -93,9 +93,9 @@ function read_file(file){
     recipe.image = arr[2];    
     recipe.nutrition_facts = arr[3].split(",");
     recipe.cuisine = arr[4];
-    recipe.favorite = false;
+    recipe.favorite = parseInt(arr[5]);
     recipe.restrictions = arr[6].split(",");
-    recipe.difficulty = 0;
+    recipe.difficulty = parseFloat(arr[7]);
     recipe.review = arr[8];
     
     for (let i = 9; i < arr.length; i++) {
@@ -195,7 +195,7 @@ function edit_pantry_item(newItem) {
     finalItem = new PantryItem(newItem.newTitle, newItem.nutritionFacts, newItem.expirationDate, newItem.quantity);
     pantryList[index] = finalItem;  //edit it in the array
     updatePantryFile('pantryItems.txt', pantryList);  //update the textfile
-    mainWindow.webContents.send('newPantryData', pantryList); //send new data to html
+    read_Pantry_List("pantryItems.txt"); //send new data to html
   } else {
     console.log(`Pantry item '${newItem.title}' not found.`);
   }
@@ -234,7 +234,7 @@ function read_Pantry_List(filePath) {
       const title = lines[i].trim();
       const nutritionFacts = lines[i + 1].trim();
       const expirationDate = lines[i + 2].trim();
-      const quantity = parseInt(lines[i + 3].trim(), 10);
+      const quantity = parseInt(lines[i + 3].trim());
 
       const pantryItem = new PantryItem(title, nutritionFacts, new Date(expirationDate), quantity);
       pantryItems.push(pantryItem);
