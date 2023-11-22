@@ -289,28 +289,27 @@ const createWindow = () => {
   mainWindow.webContents.once('dom-ready', () => {
 
   });
+
+  ipcMain.on('recipePageReady', () => {
+    populateRecipies('testRecipe.txt');
+  });
+
+  ipcMain.on('pantryPageReady', () => {
+    read_Pantry_List("pantryItems.txt");
+  });
+
+  ipcMain.on('deletion', (event, name) => {
+    delete_pantry_item(name);
+  });
+
+  ipcMain.on('updateItem', (event, newItem) => {
+    edit_pantry_item(newItem);
+  });
+
+  ipcMain.on('createNewItem', (event, data) => {
+      add_pantry_item(data);
+  });
 };
-
-ipcMain.on('recipePageReady', () => {
-  populateRecipies('testRecipe.txt');
-});
-
-ipcMain.on('pantryPageReady', () => {
-  read_Pantry_List("pantryItems.txt");
-});
-
-ipcMain.on('deletion', (event, name) => {
-  delete_pantry_item(name);
-});
-
-ipcMain.on('updateItem', (event, newItem) => {
-  edit_pantry_item(newItem);
-});
-
-ipcMain.on('createNewItem', (event, data) => {
-  add_pantry_item(data);
-});
-
 
 app.whenReady().then(() => {
   createWindow();
