@@ -131,7 +131,7 @@ function populateingredients() {
 function setCurrentAccount() {
   const userAccount = new Account();
   userAccount.username = 'TestUser';
-  userAccount.picture = '.jpg';
+  userAccount.picture = 'testpfp.jpg';
   self.currentAccount = userAccount;
 }
 function deleteRecipe(index) {
