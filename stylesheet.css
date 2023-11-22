@@ -67,31 +67,33 @@ table {
 }
 
 form {
-    max-width: 800px;
+    width: 857px;
 }
 
 input, select {
     padding: 10px;
-    margin: 10px;
+    margin: 5px;
     color: rgb(200, 200, 200);
+    border: none;
     font-family: 'Comic Sans MS', cursive;
     background-color: rgb(80, 80, 80);
-    border-radius: 5px;
+    border-radius: 30px;
+    transition: all 0.2s;
 }
 
 button {
     padding: 10px;
-    margin: 10px;
+    margin: 5px;
     color: rgb(200, 200, 200);
     font-family: 'Comic Sans MS', cursive;
     background-color: rgb(80, 80, 80);
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-button:hover {
+button:hover, input:hover{
     background-color: rgb(50, 50, 50);
 }
 nav {
@@ -110,4 +112,8 @@ nav > a:hover {
     border-radius: 25px;
     padding: 15px;
     margin: 10px;
+}
+
+.hidden {
+    display: none;
 }
