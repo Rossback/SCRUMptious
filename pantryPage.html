@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantry</title>
-    <style>
+    <link rel="stylesheet" href="stylesheet.css">
+    <!-- Below styling has been added to css stylesheet -->
+    <!-- <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -56,69 +58,75 @@
         button:hover {
             background-color: #87CEEB;
         }
-    </style>
+    </style> -->
 </head>
 <body>
 
 <header>
-    <h1>Pantry</h1>
     <nav>
-        <a href="index.html">Home</a>
+        <h1>SCRUMptious</h1>
+        <a href="./suggestions.html">Suggested</a>
+        <a href="./recipes.html">Recipes</a>
+        <a href="./calendar.html">Calendar</a>
+        <a href="./groceryList.html">Grocery List</a>
+        <a href="./pantryPage.html">Pantry</a>
     </nav>
 </header>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Nutrition Facts</th>
-            <th>Expiration Date</th>
-            <th>Quantity</th>
-            <th>Edit</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody id="pantryTableBody">
+<main>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Nutrition Facts</th>
+                <th>Expiration Date</th>
+                <th>Quantity</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody id="pantryTableBody">
 
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-<form id="addItemForm">
-    <label for="itemName">Name:</label>
-    <input type="text" id="itemName" required>
+    <form id="addItemForm">
+        <label for="itemName">Name:</label>
+        <input type="text" id="itemName" required>
 
-    <label for="nutritionFacts">Nutrition Facts:</label>
-    <input type="text" id="nutritionFacts" required>
+        <label for="nutritionFacts">Nutrition Facts:</label>
+        <input type="text" id="nutritionFacts" required>
 
-    <label for="expirationDate">Expiration Date:</label>
-    <input type="date" id="expirationDate" required>
+        <label for="expirationDate">Expiration Date:</label>
+        <input type="date" id="expirationDate" required>
 
-    <label for="quantity">Quantity:</label>
-    <input type="number" id="quantity" required>
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" required>
 
-    <button type="button" onclick="createItem()">Create Item</button>
-</form>
-
-<!-- Edit Form -->
-<div id="editForm" style="display: none;">
-    <h2>Edit Item</h2>
-    <form id="editItemForm">
-        <label for="editItemName">Name:</label>
-        <input type="text" id="editItemName" required>
-
-        <label for="editNutritionFacts">Nutrition Facts:</label>
-        <input type="text" id="editNutritionFacts" required>
-
-        <label for="editExpirationDate">Expiration Date:</label>
-        <input type="date" id="editExpirationDate" required>
-
-        <label for="editQuantity">Quantity:</label>
-        <input type="number" id="editQuantity" required>
-
-        <button type="button" onclick="saveEdit()">Save</button>
-        <button type="button" onclick="cancelEdit()">Cancel</button>
+        <button type="button" onclick="createItem()">Create Item</button>
     </form>
-</div>
+
+    <!-- Edit Form -->
+    <div id="editForm" style="display: none;">
+        <h2>Edit Item</h2>
+        <form id="editItemForm">
+            <label for="editItemName">Name:</label>
+            <input type="text" id="editItemName" required>
+
+            <label for="editNutritionFacts">Nutrition Facts:</label>
+            <input type="text" id="editNutritionFacts" required>
+
+            <label for="editExpirationDate">Expiration Date:</label>
+            <input type="date" id="editExpirationDate" required>
+
+            <label for="editQuantity">Quantity:</label>
+            <input type="number" id="editQuantity" required>
+
+            <button type="button" onclick="saveEdit()">Save</button>
+            <button type="button" onclick="cancelEdit()">Cancel</button>
+        </form>
+    </div>
+</main>
 
 
 <script>
