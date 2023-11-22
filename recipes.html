@@ -23,15 +23,11 @@
           <thead>
             <tr>
               <th>NAME:</th>
-              <th>Ingredients:</th>
-              <th>ImageURL:</th>
-              <th>facts:</th>
               <th>Cuisine:</th>
-              <th>Is favorite:</th>
-              <th>restrictions</th>
-              <th>difficulty</th>
-              <th>review</th>
-              <th>instructions:</th>
+              <th>Favorite?:</th>
+              <th>Difficulty</th>
+              <th>View</th>
+              <th>Edit/Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -58,21 +54,27 @@
           console.log('Recipe data received:', recipe);
           updateTable(recipe);
         });
+
+        function displayRecipe(recipe) {
+          console.log("Display single recipe");
+        }
       
         // Function to update the HTML table with recipe data
         function updateTable(recipe) {
           const row = tableBody.insertRow();
+          favorite = "";
+          if (recipe.favorite == 0) {
+            favorite = "Yes";
+          }else {
+            favorite = "No";
+          }
           row.innerHTML = `
             <td>${recipe.title}</td>
-            <td>${recipe.ingredients[0].name}</td>
-            <td>${recipe.image}</td>
-            <td>${recipe.nutrition_facts.join(', ')}</td>
             <td>${recipe.cuisine}</td>
-            <td>${recipe.favorite}</td>
-            <td>${recipe.restrictions.join(', ')}</td>
+            <td>${favorite}</td>
             <td>${recipe.difficulty}</td>
-            <td>${recipe.review}</td>
-            <td>${recipe.instructions.join('<br>')}</td>
+            <td><button type="button" onclick="displayRecipe(recipe)">View</button><td>
+            <td><a href="./recipeEdit.html">Edit</a><td>
           `;
         }
       </script>
