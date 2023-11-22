@@ -1,12 +1,12 @@
 Milk
 nutritional facts(healthy, sweat)
-Mon Oct 26 2026 00:00:00 GMT-0700 (Pacific Daylight Time)
+Mon Nov 27 2023 16:00:00 GMT-0800 (Pacific Standard Time)
 27
 fish
 nutritional facts(healthy, sour)
-Sun May 26 2030 00:00:00 GMT-0700 (Pacific Daylight Time)
-7
+2023-11-30
+5
 OnionsNew
 Newnutritional facts(healthy, hot)
-2023-11-23
+Tue Nov 21 2023 16:00:00 GMT-0800 (Pacific Standard Time)
 4
