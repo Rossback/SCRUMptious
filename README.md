@@ -6,11 +6,9 @@
 
 ### How to update your local repo to include main changes
 
-    ```
     git pull origin main
     git merge main
     git fetch
-    ```
 
 ### How to handle making changes
 
