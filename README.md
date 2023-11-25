@@ -26,5 +26,6 @@
     - If you are approving a Pull Request, be sure to merge and delete the branch with the request
     - If you are commenting on a request, be sure to add something meaningful
     - If you are requesting changes on a request, be sure to add what you think needs to be changed or fixed
-[^1]You can request specific people to review your Pull Request, which is recommended if you make changes to something that someone else has worked on previously
 4. If changes are approved and merged onto the main branch, ensure the old branch is **DELETED** and **NOT COMMITED TO EVER AGAIN!** This is to ensure the cleanliness of the repo :+1:
+
+[^1]: You can request specific people to review your Pull Request, which is recommended if you make changes to something that someone else has worked on previously
