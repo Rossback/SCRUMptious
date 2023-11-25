@@ -21,7 +21,6 @@
 
 1. Save your changes to a new branch, those branch protocols are listed above
 2. Create a Pull Request with a description that says everything you changed, especially if your branch name does not describe all your changes
-3. Message other people about your Pull Request so others can comment/approve/request changes to your request[^1]
+3. Message other people about your Pull Request so others can comment/approve/request changes to your request
+    - You can request specific people to review your Pull request, which is recommended if you change something on a feature that someone else has worked on previously
 4. If changes are approved and merged onto the main branch, ensure the old branch is DELETED AND NOT COMMITED TO EVER AGAIN! This is to ensure the cleanliness of the repo
-
-[^1]: You can request specific people to review your Pull request, which is recommended if you change something on a feature that someone else has worked on previously
