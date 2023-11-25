@@ -6,14 +6,17 @@
 
 ### How to update your local repo to include main changes
 
-1. First, `git pull origin main`
-2. Next, `git merge main`
-3. Optionally, `git fetch`
+1. First,
+    `git pull origin main`
+2. Next,
+    `git merge main`
+3. Optionally,
+    `git fetch`
     - Use frequently if you're working on a branch with someone else
 
 ### How to handle making changes
 
-- Make a [branch](https://github.com/Rossback/SCRUMptious/branches) with a name that tells others what is being changed
+- Make a new [branch](https://github.com/Rossback/SCRUMptious/branches) with a name that tells others what is being changed
 - If you are making changes on multiple things or features, list them in your Pull Request
 - Try to use one branch for one topic/feature/change
 - Add comments so others can understand what your code does
