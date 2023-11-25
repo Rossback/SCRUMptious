@@ -6,9 +6,10 @@
 
 ### How to update your local repo to include main changes, in this order
 
-1. git pull origin main
-2. git merge main
-3. git fetch (incase you're working on a branch with someone else)
+1. First, 'git pull origin main'
+2. Next, 'git merge main'
+3. Finally and optionally, 'git fetch'
+    - Use if you're working on a branch with someone else
 
 ### How to handle making changes
 
