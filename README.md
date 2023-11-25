@@ -6,13 +6,11 @@
 
 ### How to update your local repo to include main changes
 
-1. First,
-    `git pull origin main`
-2. Next,
-    `git merge main`
-3. Optionally,
-    `git fetch`
-    - Use frequently if you're working on a branch with someone else
+    ```
+    git pull origin main
+    git merge main
+    git fetch
+    ```
 
 ### How to handle making changes
 
@@ -23,7 +21,7 @@
 
 ### How to make Pull Requests
 
-1. Create a new branch and push your changes to it, the branch protocols are listed above
+1. Create a new branch and push your changes to it, the branch protocols are listed [above](https://github.com/Rossback/SCRUMptious/tree/readme-update#how-to-handle-making-changes)
 2. Create a [Pull Request](https://github.com/Rossback/SCRUMptious/pulls) with a description that says everything you changed, especially if your branch name does not describe all your changes
 3. Message other people about your Pull Request so others can approve, comment on, or request changes to your request[^1]
     - If you are approving a Pull Request, be sure to merge and delete the branch with the request
