@@ -193,37 +193,37 @@
           const isFormValid = document.getElementById('addRecipeForm').checkValidity();
 
           if (isFormValid) {
-              const recipeName = document.getElementById('recipeName').value;
-              arr = "";
-              for (i = 1; i < count; i++) {
-                arr += document.getElementById(`name${i}`).value + "$ $ $" + document.getElementById(`quantity${i}`).value + "$" + document.getElementById(`unit${i}`).value + ",";
-              }
-              const ingredients = arr;
-              const image = document.getElementById('pic').value;
-              const nutritional_facts = "" + document.getElementById('Calories').value + "," + document.getElementById('Protein').value + "," + document.getElementById('Fat').value;
-              const cuisine = document.getElementById('cuisine').value;
+            const recipeName = document.getElementById('recipeName').value;
+            arr = "";
+            for (i = 1; i < count; i++) {
+              arr += document.getElementById(`name${i}`).value + "$ $ $" + document.getElementById(`quantity${i}`).value + "$" + document.getElementById(`unit${i}`).value + ",";
+            }
+            const ingredients = arr;
+            const image = document.getElementById('pic').value;
+            const nutritional_facts = "" + document.getElementById('Calories').value + "," + document.getElementById('Protein').value + "," + document.getElementById('Fat').value;
+            const cuisine = document.getElementById('cuisine').value;
+            fav = 1;
+            if (document.getElementById('favorite').checked == true) {
               fav = 0;
-              if (document.getElementById('favorite').value == "on") {
-                fav = 1;
-              }
-              const favorite = fav;
-              arr = "";
-              for (i = 1; i < restrictionCount; i++) {
-                arr += document.getElementById(`restriction${i}`).value + ",";
-              }
-              const restrictions = arr;
-              const difficulty = document.getElementById('difficulty').value;
-              const review = document.getElementById('review').value;
-              arr = "";
-              for (i = 1; i < instructionCount; i++) {
-                arr += document.getElementById(`instruction${i}`).value + "\n";
-              }
-              const instructions = arr;
+            }
+            const favorite = fav;
+            arr = "";
+            for (i = 1; i < restrictionCount; i++) {
+              arr += document.getElementById(`restriction${i}`).value + ",";
+            }
+            const restrictions = arr;
+            const difficulty = document.getElementById('difficulty').value;
+            const review = document.getElementById('review').value;
+            arr = "";
+            for (i = 1; i < instructionCount; i++) {
+              arr += document.getElementById(`instruction${i}`).value + "\n";
+            }
+            const instructions = arr;
 
-              newRecipe = [recipeName, ingredients, image, nutritional_facts, cuisine, favorite, restrictions, difficulty, review, instructions];
-              const data = newRecipe.join('\n');
+            newRecipe = [recipeName, ingredients, image, nutritional_facts, cuisine, favorite, restrictions, difficulty, review, instructions];
+            const data = newRecipe.join('\n');
 
-              fs.writeFile(`./recipes/${recipeName}.txt`, data, 'utf8', (err) => {   //write the data to the file
+            fs.writeFile(`./recipes/${recipeName}.txt`, data, 'utf8', (err) => {   //write the data to the file
               if (err) {
                 console.error(err);
               } else {
@@ -231,15 +231,19 @@
                 tableBody.innerHTML = "";
                 ipcRenderer.send('recipePageReady');
               }
-              });
-
-              // Reload the recipe page
-              
-
-              // document.getElementById('itemName').value = '';
-              // document.getElementById('nutritionFacts').value = '';
-              // document.getElementById('expirationDate').value = '';
-              // document.getElementById('quantity').value = '';
+            });
+            document.getElementById('recipeName').value = '';
+            document.getElementById('ingredients').innerHTML = '<button type="button" onclick="addIng()">Add Ingredient</button>';
+            document.getElementById('pic').value = '';
+            document.getElementById('Calories').value = '';
+            document.getElementById('Protein').value = '';
+            document.getElementById('Fat').value = '';
+            document.getElementById('cuisine').value = '';
+            document.getElementById('favorite').checked = false;
+            document.getElementById('Restriction').innerHTML = '<button type="button" onclick="addRestriction()">Add Restriction/allergy</button>';
+            document.getElementById('difficulty').value = 5;
+            document.getElementById('review').value = '';
+            document.getElementById('Instructions').innerHTML = '<button type="button" onclick="addInstruction()">Add Step</button>';
           } else {
               alert('Please fill in all required fields.');
           }
