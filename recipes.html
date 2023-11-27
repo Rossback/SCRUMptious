@@ -131,38 +131,62 @@
 
         function addIng() {
           // This creates the html for an ingredient input
+          arr = [];
+          for (i = 1; i < count; i++) {
+            arr[i-1] = [document.getElementById(`name${i}`).value, document.getElementById(`quantity${i}`).value, document.getElementById(`unit${i}`).value];
+          }
           document.getElementById('ingredients').innerHTML += `
           <div> 
             <label for="name${count}">Name:</label>
-            <input type="text" id="name${count}" required>
+            <input type="text" id="name${count}">
 
             <label for="quantity${count}">Quantity</label>
-            <input type="number" id="quantity${count}" required> 
+            <input type="number" id="quantity${count}"> 
 
             <label for="unit${count}">Unit</label>
             <input type="text" id="unit${count}">
           </div>`;
+          for (i = 1; i < count; i++) {
+            document.getElementById(`name${i}`).value = arr[i-1][0];
+            document.getElementById(`quantity${i}`).value = arr[i-1][1];
+            document.getElementById(`unit${i}`).value = arr[i-1][2];
+          }
           count++;
         }
 
         function addInstruction() {
           // This adds the html for an instruction step input 
+          arr = [];
+          for (i = 1; i < instructionCount; i++) {
+            arr[i-1] = document.getElementById(`instruction${i}`).value;
+          }
           document.getElementById('Instructions').innerHTML += `
           <div>
             <label for="instruction${instructionCount}">Step ${instructionCount}</label>
-            <input type="text" id="instruction${instructionCount}" required>
+            <input type="text" id="instruction${instructionCount}">
           </div>
           `;
+          for (i = 1; i < instructionCount; i++) {
+            document.getElementById(`instruction${i}`).value = arr[i-1];
+          }
           instructionCount++;
         }
 
         function addRestriction() {
+          arr = [];
+          for (i = 1; i < restrictionCount; i++) {
+            arr[i-1] = document.getElementById(`restriction${i}`).value;
+          }
           document.getElementById('Restriction').innerHTML += `
           <div>
             <label for="restriction${restrictionCount}">Restriction (eg. gluten, dairy, etc)</label> 
             <input type="text" id="restriction${restrictionCount}">
           </div>
           `;
+          for (i = 1; i < restrictionCount; i++) {
+            document.getElementById(`restriction${i}`).value = arr[i-1];
+          }
+          restrictionCount++;
         }
 
         function createRecipe() {
