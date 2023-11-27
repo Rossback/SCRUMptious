@@ -18,22 +18,69 @@
     </nav>
     </header>
     <main>
-      <div>
         <table id="table">           
           <thead>
             <tr>
               <th>NAME:</th>
               <th>Cuisine:</th>
               <th>Favorite?:</th>
-              <th>Difficulty</th>
-              <th>View</th>
-              <th>Edit/Delete</th>
+              <th>Difficulty:</th>
+              <th>View:</th>
+              <th>Edit/Delete:</th>
             </tr>
           </thead>
           <tbody>
           </tbody>
         </table>
-      </div>
+
+        <div id="addRecipe">
+          <h2>Add Recipe</h2>
+          <form id="addRecipeForm">
+            <div>
+              <label for="recipeName">Name:</label>
+              <input type="text" id="recipeName" required>
+            </div>
+            <div id="ingredients">
+              <button type="button" onclick="addIng()">Add Ingredient</button>
+            </div>
+            <div>
+              <label for="pic">Upload picture:</label>
+              <input type="file" id="pic" name="pic" accept="image/png, image/jpeg" />
+            </div>
+            <div id="nutritional_facts">
+              <label for="Calories">Calories</label>
+              <input type="number" id="Calories">
+
+              <label for="Protein">Grams of Protein:</label>
+              <input type="number" id="Protein">
+
+              <label for="Fat">Grams of Fat:</label>
+              <input type="number" id="Fat">
+            </div>
+            <div>
+              <label for="cuisine">Cuisine type:</label>
+              <input type="text" id="cuisine" required>
+
+              <label for="favorite">Favorite?</label>
+              <input type="checkbox" id="favorite">
+            </div>
+            <div id="Restriction">
+              <button type="button" onclick="addRestriction()">Add Restriction/allergy</button>
+            </div>
+            <div>
+              <label for="difficulty">Difficulty</label>
+              <input type="range" id="difficulty" min="0" max="10" required>
+
+              <label for="review">Description/Review</label>
+              <input type="text" id="review"> 
+            </div>
+            <div id="Instructions">
+              <button type="button" onclick="addInstruction()">Add Step</button>
+            </div>
+            <button type="button" onclick="createRecipe()">Submit</button>
+          </form>
+        </div>
+
     </main>
     <footer>
       &copy; SOFTWARE 1 GROUP
@@ -41,6 +88,7 @@
     <script>
         console.log("Script loaded");
         const { ipcRenderer } = require('electron');
+        const fs = require('fs');
 
         document.addEventListener('DOMContentLoaded', (event) => {
           console.log("ready");
@@ -48,6 +96,9 @@
         });
 
         const tableBody = document.querySelector('#table tbody');
+        count = 1;
+        instructionCount = 1;
+        restrictionCount = 1;
       
         // Listen for the recipe data from the main process
         ipcRenderer.on('recipeData', (event, recipe) => {
@@ -76,6 +127,98 @@
             <td><button type="button" onclick="displayRecipe(recipe)">View</button><td>
             <td><a href="./recipeEdit.html">Edit</a><td>
           `;
+        }
+
+        function addIng() {
+          // This creates the html for an ingredient input
+          document.getElementById('ingredients').innerHTML += `
+          <div> 
+            <label for="name${count}">Name:</label>
+            <input type="text" id="name${count}" required>
+
+            <label for="quantity${count}">Quantity</label>
+            <input type="number" id="quantity${count}" required> 
+
+            <label for="unit${count}">Unit</label>
+            <input type="text" id="unit${count}">
+          </div>`;
+          count++;
+        }
+
+        function addInstruction() {
+          // This adds the html for an instruction step input 
+          document.getElementById('Instructions').innerHTML += `
+          <div>
+            <label for="instruction${instructionCount}">Step ${instructionCount}</label>
+            <input type="text" id="instruction${instructionCount}" required>
+          </div>
+          `;
+          instructionCount++;
+        }
+
+        function addRestriction() {
+          document.getElementById('Restriction').innerHTML += `
+          <div>
+            <label for="restriction${restrictionCount}">Restriction (eg. gluten, dairy, etc)</label> 
+            <input type="text" id="restriction${restrictionCount}">
+          </div>
+          `;
+        }
+
+        function createRecipe() {
+          const isFormValid = document.getElementById('addRecipeForm').checkValidity();
+
+          if (isFormValid) {
+              const recipeName = document.getElementById('recipeName').value;
+              arr = "";
+              for (i = 1; i < count; i++) {
+                arr += document.getElementById(`name${i}`).value + "$ $ $" + document.getElementById(`quantity${i}`).value + "$" + document.getElementById(`unit${i}`).value + ",";
+              }
+              const ingredients = arr;
+              const image = document.getElementById('pic').value;
+              const nutritional_facts = "" + document.getElementById('Calories').value + "," + document.getElementById('Protein').value + "," + document.getElementById('Fat').value;
+              const cuisine = document.getElementById('cuisine').value;
+              fav = 0;
+              if (document.getElementById('favorite').value == "on") {
+                fav = 1;
+              }
+              const favorite = fav;
+              arr = "";
+              for (i = 1; i < restrictionCount; i++) {
+                arr += document.getElementById(`restriction${i}`).value + ",";
+              }
+              const restrictions = arr;
+              const difficulty = document.getElementById('difficulty').value;
+              const review = document.getElementById('review').value;
+              arr = "";
+              for (i = 1; i < instructionCount; i++) {
+                arr += document.getElementById(`instruction${i}`).value + "\n";
+              }
+              const instructions = arr;
+
+              newRecipe = [recipeName, ingredients, image, nutritional_facts, cuisine, favorite, restrictions, difficulty, review, instructions];
+              const data = newRecipe.join('\n');
+
+              fs.writeFile(`./recipes/${recipeName}.txt`, data, 'utf8', (err) => {   //write the data to the file
+              if (err) {
+                console.error(err);
+              } else {
+                console.log('Recipe file created successfully.');
+                tableBody.innerHTML = "";
+                ipcRenderer.send('recipePageReady');
+              }
+              });
+
+              // Reload the recipe page
+              
+
+              // document.getElementById('itemName').value = '';
+              // document.getElementById('nutritionFacts').value = '';
+              // document.getElementById('expirationDate').value = '';
+              // document.getElementById('quantity').value = '';
+          } else {
+              alert('Please fill in all required fields.');
+          }
         }
       </script>
   </body>

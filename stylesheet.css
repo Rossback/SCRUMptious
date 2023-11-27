@@ -93,6 +93,10 @@ button {
     transition: all 0.2s;
 }
 
+div {
+    margin: 15px;
+}
+
 button:hover, input:hover{
     background-color: rgb(50, 50, 50);
 }

@@ -153,7 +153,7 @@ function createIngredient(data) {
     temp = list[i].split("$");
     let ingredient = new Ingredient();
     ingredient.name = temp[0];
-    ingredient.restrictions = temp[1].split("/");
+    ingredient.restrictions = temp[1];
     ingredient.expiration_date = temp[2];
     ingredient.quantity = parseFloat(temp[3]);
     ingredient.measurement = temp[4];
