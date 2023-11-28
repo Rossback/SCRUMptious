@@ -108,7 +108,7 @@ function read_file(file){
   }
 }  
 
-function readToDisplay(file){ 
+function readToDisplay(file, m){ 
   try {
     const filePath = directory + file;
     const data = fs.readFileSync(filePath, 'utf8'); //syncronously read da file
@@ -122,13 +122,18 @@ function readToDisplay(file){
     recipe.cuisine = arr[4];
     recipe.favorite = parseInt(arr[5]);
     recipe.restrictions = arr[6].split(",");
-    recipe.difficulty = parseFloat(arr[7]);
+    recipe.difficulty = parseInt(arr[7]);
     recipe.review = arr[8];
     
     for (let i = 9; i < arr.length; i++) {
       recipe.instructions.push(arr[i].trim());
     }
-    mainWindow.webContents.send('recipeDisplay', recipe);
+    if (m == 1) {
+      mainWindow.webContents.send('recipeDisplay', recipe);
+    }else {
+      mainWindow.webContents.send('recipeToEdit', recipe);
+    }
+    
   } catch (err) {
     console.error(err);
   }
@@ -311,8 +316,12 @@ const createWindow = () => {
 
   });
 
+  ipcMain.on('editRecipe', (event, name) => {
+    readToDisplay(name, 0);
+  })
+
   ipcMain.on('displayRecipe', (event, file) => {
-    readToDisplay(file)
+    readToDisplay(file, 1);
   })
 
   ipcMain.on('recipePageReady', () => {
