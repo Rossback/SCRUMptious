@@ -106,8 +106,34 @@ function read_file(file){
   } catch (err) {
     console.error(err);
   }
-  
 }  
+
+function readToDisplay(file){ 
+  try {
+    const filePath = directory + file;
+    const data = fs.readFileSync(filePath, 'utf8'); //syncronously read da file
+    arr = data.split("\n"); // split the data into each section 
+    let recipe = new Recipe();
+
+    recipe.title = arr[0];
+    recipe.ingredients = createIngredient(arr[1]);
+    recipe.image = arr[2];    
+    recipe.nutrition_facts = arr[3].split(",");
+    recipe.cuisine = arr[4];
+    recipe.favorite = parseInt(arr[5]);
+    recipe.restrictions = arr[6].split(",");
+    recipe.difficulty = parseFloat(arr[7]);
+    recipe.review = arr[8];
+    
+    for (let i = 9; i < arr.length; i++) {
+      recipe.instructions.push(arr[i].trim());
+    }
+    mainWindow.webContents.send('recipeDisplay', recipe);
+  } catch (err) {
+    console.error(err);
+  }
+}  
+
 function populateRecipies() {
   // use readdir method to read the files of the direcoty 
   fs.readdir(directory, (err, files) => {
@@ -139,12 +165,7 @@ function deleteRecipe(index) {
     recipeArray.splice(index, 1); 
   }
 }
-function createRecipe() {
-  console.log('hi');
-}
-function editRecipe() {
-  console.log('hi');
-}
+
 function createIngredient(data) {
   let list = data.split(",");
   let temp = [];
@@ -289,6 +310,10 @@ const createWindow = () => {
   mainWindow.webContents.once('dom-ready', () => {
 
   });
+
+  ipcMain.on('displayRecipe', (event, file) => {
+    readToDisplay(file)
+  })
 
   ipcMain.on('recipePageReady', () => {
     populateRecipies('testRecipe.txt');

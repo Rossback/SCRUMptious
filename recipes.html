@@ -18,6 +18,7 @@
     </nav>
     </header>
     <main>
+      <div id="Single"></div>
         <table id="table">           
           <thead>
             <tr>
@@ -33,9 +34,9 @@
           </tbody>
         </table>
 
-        <div id="addRecipe">
-          <h2>Add Recipe</h2>
-          <form id="addRecipeForm">
+        <div>
+          <h2 id="formTitle">Add Recipe</h2>
+          <form id="RecipeForm">
             <div>
               <label for="recipeName">Name:</label>
               <input type="text" id="recipeName" required>
@@ -106,8 +107,15 @@
           updateTable(recipe);
         });
 
-        function displayRecipe(recipe) {
-          console.log("Display single recipe");
+        ipcRenderer.on('recipeDisplay', (event, recipe) => {
+          console.log('Recipe Display received:', recipe);
+          display(recipe);
+        });
+
+        function displayRecipe(name) {
+          console.log("made it");
+          name += '.txt';
+          ipcRenderer.send('displayRecipe', name);
         }
       
         // Function to update the HTML table with recipe data
@@ -124,8 +132,8 @@
             <td>${recipe.cuisine}</td>
             <td>${favorite}</td>
             <td>${recipe.difficulty}</td>
-            <td><button type="button" onclick="displayRecipe(recipe)">View</button><td>
-            <td><a href="./recipeEdit.html">Edit</a><td>
+            <td><button type="button" onclick="displayRecipe('${recipe.title}')">View</button><td>
+            <td><button type="button" onclick="editRecipe('${recipe.title}')">Edit</button><td>
           `;
         }
 
@@ -247,6 +255,15 @@
           } else {
               alert('Please fill in all required fields.');
           }
+        }
+
+        function display(recipe) {
+          document.getElementById('Single').innerHTML = `
+          <div><p>${recipe.title}, ${recipe.cuisine}</p></div>
+          `;
+        }
+
+        function editRecipe(name) {
         }
       </script>
   </body>
