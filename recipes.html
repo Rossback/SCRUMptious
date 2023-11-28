@@ -112,8 +112,32 @@
           display(recipe);
         });
 
+        ipcRenderer.on('recipeToEdit', (event, recipe) => {
+          fillForm(recipe);
+        });
+
+        function fillForm(recipe) {
+          document.getElementById('recipeName').value = recipe.title;
+          numIngr = recipe.ingredients.length
+          for (i = 0; i < numIngr; i++) {
+            document.getElementById('ingredients').innerHTML += `
+            <div> 
+              <label for="name${i}">Name:</label>
+              <input type="text" id="name${i}">
+
+              <label for="quantity${i}">Quantity</label>
+              <input type="number" id="quantity${i}"> 
+
+              <label for="unit${i}">Unit</label>
+              <input type="text" id="unit${i}">
+            </div>`;
+          }
+          for (i = 0; i < numIngr; i++) {
+            document.getElementById(`name${i}`).value = recipe.ingredients[i].name;
+          }
+        }
+
         function displayRecipe(name) {
-          console.log("made it");
           name += '.txt';
           ipcRenderer.send('displayRecipe', name);
         }
@@ -264,7 +288,11 @@
         }
 
         function editRecipe(name) {
+          name += '.txt';
+          ipcRenderer.send('editRecipe', name);
         }
+
+        
       </script>
   </body>
 </html>
