@@ -8,5 +8,5 @@ gluten,dairy,
 2
 It is yummy 
 Construct Sandwich
-Cook sandwich 
-eat sandwich 
+Cook sandwich
+eat sandwich

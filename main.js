@@ -122,7 +122,7 @@ function readToDisplay(file, m){
     recipe.cuisine = arr[4];
     recipe.favorite = parseInt(arr[5]);
     recipe.restrictions = arr[6].split(",");
-    recipe.difficulty = parseFloat(arr[7]);
+    recipe.difficulty = parseInt(arr[7]);
     recipe.review = arr[8];
     
     for (let i = 9; i < arr.length; i++) {

@@ -117,9 +117,16 @@
         });
 
         function fillForm(recipe) {
+          count = recipe.ingredients.length;
+          instructionCount = recipe.instructions.length;
+          restrictionCount = recipe.restrictions.length;
+          document.getElementById('formTitle').innerHTML = 'Edit Recipe';
           document.getElementById('recipeName').value = recipe.title;
-          numIngr = recipe.ingredients.length
-          for (i = 0; i < numIngr; i++) {
+          numIngr = recipe.ingredients.length;
+          document.getElementById('ingredients').innerHTML = `
+          <button type="button" onclick="addIng()">Add Ingredient</button>
+          `;
+          for (i = 1; i < numIngr; i++) {
             document.getElementById('ingredients').innerHTML += `
             <div> 
               <label for="name${i}">Name:</label>
@@ -132,8 +139,58 @@
               <input type="text" id="unit${i}">
             </div>`;
           }
-          for (i = 0; i < numIngr; i++) {
-            document.getElementById(`name${i}`).value = recipe.ingredients[i].name;
+          for (i = 1; i < numIngr; i++) {
+            document.getElementById(`name${i}`).value = recipe.ingredients[i-1].name;
+            document.getElementById(`quantity${i}`).value = recipe.ingredients[i-1].quantity;
+            document.getElementById(`unit${i}`).value = recipe.ingredients[i-1].measurement;
+          }
+          // document.getElementById('pic').value = recipe.image;
+
+          // const fileInput = document.querySelector('input[type="file"]');
+          // const file = new File ([], recipe.image);
+          // const dataTransfer = new DataTransfer();
+          // dataTransfer.items.add(file);
+          // fileInput.files = dataTransfer.files;
+
+          document.getElementById('Calories').value = recipe.nutrition_facts[0];
+          document.getElementById('Protein').value = recipe.nutrition_facts[1];
+          document.getElementById('Fat').value = recipe.nutrition_facts[2];
+          document.getElementById('cuisine').value = recipe.cuisine;
+          
+          if (recipe.favorite == 0) {
+            document.getElementById('favorite').checked = true;
+          }else {
+            document.getElementById('favorite').checked = false;
+          }
+
+          document.getElementById('Restriction').innerHTML = `
+          <button type="button" onclick="addRestriction()">Add Restriction/allergy</button>
+          `;
+          for (i = 1; i < recipe.restrictions.length; i++) {
+            document.getElementById('Restriction').innerHTML += `
+            <div> 
+              <label for="restriction${i}">Restriction (eg. gluten, dairy, etc)</label>
+              <input type="text" id="restriction${i}">
+            </div>`;
+          }
+          for (i = 1; i < recipe.restrictions.length; i++) {
+            document.getElementById(`restriction${i}`).value = recipe.restrictions[i-1];
+          }
+          document.getElementById('difficulty').value = recipe.difficulty;
+          document.getElementById('review').value = recipe.review;
+
+          document.getElementById('Instructions').innerHTML = `
+          <button type="button" onclick="addInstruction()">Add Step</button>
+          `;
+          for (i = 1; i < recipe.instructions.length; i++) {
+            document.getElementById('Instructions').innerHTML += `
+            <div> 
+              <label for="instruction${i}">Step ${i}</label>
+              <input type="text" id="instruction${i}">
+            </div>`;
+          }
+          for (i = 1; i < recipe.instructions.length; i++) {
+            document.getElementById(`instruction${i}`).value = recipe.instructions[i-1];
           }
         }
 
@@ -222,7 +279,7 @@
         }
 
         function createRecipe() {
-          const isFormValid = document.getElementById('addRecipeForm').checkValidity();
+          const isFormValid = document.getElementById('RecipeForm').checkValidity();
 
           if (isFormValid) {
             const recipeName = document.getElementById('recipeName').value;
