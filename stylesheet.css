@@ -136,11 +136,13 @@ nav > a:hover {
     background-color: #BF616A;
     width: 2em;
     height: 2em;
+    margin: 1em;
     border-radius: 2em;
 }
 #favorite:hover {
     width: 2.5em;
     height: 2.5em;
+    margin: 0.75em;
     border-radius: 2.5em;
 }
 #favorite::before {
