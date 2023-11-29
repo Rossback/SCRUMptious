@@ -12,6 +12,13 @@ h1 {
     margin: 10px;
     text-align: center;
     padding: 20px;
+    transition: all 0.2s;
+
+}
+h1:hover {
+    border-radius: 35px;
+    padding: 25px;
+    margin: 5px;
 }
 h2 {
     color: rgb(230, 230, 230);
@@ -118,6 +125,33 @@ nav > a:hover {
     margin: 10px;
 }
 
-.hidden {
-    display: none;
+#Fat, #Calories, #Protein{
+    max-width: 80px;
+}
+
+#favorite {
+    display: inline-block;
+    vertical-align: middle;
+    appearance: none;
+    background-color: #BF616A;
+    width: 2em;
+    height: 2em;
+    margin: 1em;
+    border-radius: 2em;
+}
+#favorite:hover {
+    width: 2.5em;
+    height: 2.5em;
+    margin: 0.75em;
+    border-radius: 2.5em;
+}
+#favorite::before {
+    background-color: #BF616A;
+}
+#favorite:checked {
+    background-color: #A3BE8C;
+}
+
+#difficulty {
+
 }
