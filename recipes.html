@@ -366,8 +366,38 @@
         }
 
         function display(recipe) {
+          count = recipe.ingredients.length;
+          instructionCount = recipe.instructions.length;
+          restrictionCount = recipe.restrictions.length;
+          ingredientList = "";
+          restrictionList = "";
+          instructionList = "";
+          fav = "";
+
+          if (recipe.favorite == 0) {
+            fav = "A Favorite";
+          }
+          for (i = 1; i < count; i++) {
+            ingredientList += `<li>${recipe.ingredients[i-1].name}: ${recipe.ingredients[i-1].quantity} ${recipe.ingredients[i-1].measurement}</li>`;
+          }
+          for (i = 1; i < restrictionCount; i++) {
+            restrictionList += `, ${recipe.restrictions[i-1]}`;
+          }
+          for (i = 1; i < instructionCount; i++) {
+            instructionList += `<li>${recipe.instructions[i-1]}</li>`;
+          }
           document.getElementById('Single').innerHTML = `
-          <div><p>${recipe.title}, ${recipe.cuisine}</p></div>
+          <h3>${recipe.title}: ${fav}</h3> 
+          <p style: 'color:rgb(200, 200, 200)'>
+            <div>RESTRICTIONS: ${restrictionList}</div>
+            <div>Cuisine: ${recipe.cuisine}, Difficulty: ${recipe.difficulty}, Calories: ${recipe.nutrition_facts[0]}, Grams of Protein: ${recipe.nutrition_facts[1]}, Grams of Fat: ${recipe.nutrition_facts[2]}</div>
+            <div>image</div>
+            <div>Review/Description: ${recipe.review}</div>
+            <h4>Ingredients:</h4>
+            <ul>${ingredientList}</ul>
+            <h4>Instructions:</h4>
+            <ol>${instructionList}</ol>
+          </p>
           `;
         }
 
