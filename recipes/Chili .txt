@@ -1,0 +1,12 @@
+Chili 
+Beans$ $ $2$cans,Meat$ $ $1$pound,Onions$ $ $1$onion,
+
+250,12,10
+Mexican 
+1
+Meat ,
+3
+Amanda likes chili
+Put ingredients into a pot
+Cook for a while
+Serve and eat
