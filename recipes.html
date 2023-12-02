@@ -78,7 +78,11 @@
             <div id="Instructions">
               <button type="button" onclick="addInstruction()">Add Step</button>
             </div>
-            <button type="button" onclick="createRecipe()">Submit</button>
+            <div id="del">
+            </div>
+            <div id="submit">
+              <button type="button" onclick="createRecipe()">Submit</button>
+            </div>
           </form>
         </div>
 
@@ -100,6 +104,8 @@
         count = 1;
         instructionCount = 1;
         restrictionCount = 1;
+        var oldRecipe = "";
+        isEdit = 0;
       
         // Listen for the recipe data from the main process
         ipcRenderer.on('recipeData', (event, recipe) => {
@@ -120,6 +126,11 @@
           count = recipe.ingredients.length;
           instructionCount = recipe.instructions.length;
           restrictionCount = recipe.restrictions.length;
+          isEdit = 1;
+          oldRecipe = recipe.title.replace(/(\r\n|\n|\r)/gm,"");
+          document.getElementById('del').innerHTML = `
+          <button type="button" onclick="deleteRecipe('${recipe.title.replace(/(\r\n|\n|\r)/gm,"")}')">Delete</button>
+          `;
           document.getElementById('formTitle').innerHTML = 'Edit Recipe';
           document.getElementById('recipeName').value = recipe.title;
           numIngr = recipe.ingredients.length;
@@ -192,6 +203,7 @@
           for (i = 1; i < recipe.instructions.length; i++) {
             document.getElementById(`instruction${i}`).value = recipe.instructions[i-1];
           }
+          
         }
 
         function displayRecipe(name) {
@@ -203,6 +215,7 @@
         function updateTable(recipe) {
           const row = tableBody.insertRow();
           favorite = "";
+          title = recipe.title.replace(/(\r\n|\n|\r)/gm,"");
           if (recipe.favorite == 0) {
             favorite = "Yes";
           }else {
@@ -213,8 +226,8 @@
             <td>${recipe.cuisine}</td>
             <td>${favorite}</td>
             <td>${recipe.difficulty}</td>
-            <td><button type="button" onclick="displayRecipe('${recipe.title}')">View</button><td>
-            <td><button type="button" onclick="editRecipe('${recipe.title}')">Edit</button><td>
+            <td><button type="button" onclick="displayRecipe('${title}')">View</button><td>
+            <td><button type="button" onclick="editRecipe('${title}')">Edit</button><td>
           `;
         }
 
@@ -282,8 +295,15 @@
           const isFormValid = document.getElementById('RecipeForm').checkValidity();
 
           if (isFormValid) {
-            const recipeName = document.getElementById('recipeName').value;
             arr = "";
+            if (isEdit == 1) {
+              isEdit = 0;
+              if (oldRecipe != document.getElementById('recipeName').value) {
+                fs.unlinkSync(`./recipes/${oldRecipe}.txt`);
+              }
+            } 
+            const recipeName = document.getElementById('recipeName').value;
+            console.log(recipeName);
             for (i = 1; i < count; i++) {
               arr += document.getElementById(`name${i}`).value + "$ $ $" + document.getElementById(`quantity${i}`).value + "$" + document.getElementById(`unit${i}`).value + ",";
             }
@@ -321,6 +341,14 @@
                 ipcRenderer.send('recipePageReady');
               }
             });
+            clearForm();
+          } else {
+              alert('Please fill in all required fields.');
+          }
+        }
+
+        function clearForm() {
+          document.getElementById('formTitle').innerHTML = 'Add Recipe';
             document.getElementById('recipeName').value = '';
             document.getElementById('ingredients').innerHTML = '<button type="button" onclick="addIng()">Add Ingredient</button>';
             document.getElementById('pic').value = '';
@@ -333,14 +361,43 @@
             document.getElementById('difficulty').value = 5;
             document.getElementById('review').value = '';
             document.getElementById('Instructions').innerHTML = '<button type="button" onclick="addInstruction()">Add Step</button>';
-          } else {
-              alert('Please fill in all required fields.');
-          }
+            document.getElementById('submit').innerHTML = `<button type="button" onclick="createRecipe()">Submit</button>`;
+            document.getElementById('del').innerHTML = '';
         }
 
         function display(recipe) {
+          count = recipe.ingredients.length;
+          instructionCount = recipe.instructions.length;
+          restrictionCount = recipe.restrictions.length;
+          ingredientList = "";
+          restrictionList = "";
+          instructionList = "";
+          fav = "";
+
+          if (recipe.favorite == 0) {
+            fav = "A Favorite";
+          }
+          for (i = 1; i < count; i++) {
+            ingredientList += `<li>${recipe.ingredients[i-1].name}: ${recipe.ingredients[i-1].quantity} ${recipe.ingredients[i-1].measurement}</li>`;
+          }
+          for (i = 1; i < restrictionCount; i++) {
+            restrictionList += `, ${recipe.restrictions[i-1]}`;
+          }
+          for (i = 1; i < instructionCount; i++) {
+            instructionList += `<li>${recipe.instructions[i-1]}</li>`;
+          }
           document.getElementById('Single').innerHTML = `
-          <div><p>${recipe.title}, ${recipe.cuisine}</p></div>
+          <h3>${recipe.title}: ${fav}</h3> 
+          <p style: 'color:rgb(200, 200, 200)'>
+            <div>RESTRICTIONS: ${restrictionList}</div>
+            <div>Cuisine: ${recipe.cuisine}, Difficulty: ${recipe.difficulty}, Calories: ${recipe.nutrition_facts[0]}, Grams of Protein: ${recipe.nutrition_facts[1]}, Grams of Fat: ${recipe.nutrition_facts[2]}</div>
+            <div>image</div>
+            <div>Review/Description: ${recipe.review}</div>
+            <h4>Ingredients:</h4>
+            <ul>${ingredientList}</ul>
+            <h4>Instructions:</h4>
+            <ol>${instructionList}</ol>
+          </p>
           `;
         }
 
@@ -349,6 +406,17 @@
           ipcRenderer.send('editRecipe', name);
         }
 
+        function deleteRecipe(name) {
+          name += '.txt';
+          fs.unlinkSync(`./recipes/${name}`, (err) => {
+            if (err) {
+                console.error(err);
+            }
+          });
+          tableBody.innerHTML = "";
+          ipcRenderer.send('recipePageReady');
+          clearForm();
+        }
         
       </script>
   </body>
