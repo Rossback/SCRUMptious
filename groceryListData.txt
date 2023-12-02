@@ -1,0 +1,8 @@
+Onion
+7
+tomato
+33
+rice
+2
+celery
+5
