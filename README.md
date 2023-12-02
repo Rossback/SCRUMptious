@@ -6,9 +6,9 @@
 
 ### How to update your local repo to include main changes
 
-    git pull origin main //pulls main branch up to date on your system
-    git merge main //merges changes from the updated main branch into your current branch
-    git fetch //pulls updates on your branch incase there have been changes
+    git pull origin main
+    git merge main
+    git fetch
 
 ### How to handle making changes
 
@@ -26,13 +26,5 @@
     - If you are commenting on a request, be sure to add something meaningful
     - If you are requesting changes on a request, be sure to add what you think needs to be changed or fixed
 4. If changes are approved and merged onto the main branch, ensure the old branch is **DELETED** and **NOT COMMITED TO EVER AGAIN!** This is to ensure the cleanliness of the repo :+1:
-
-### What to do after you merge your new branch
-
-    git checkout main //changes your working branch to main
-    git pull origin main //pulls main to ensure you have the most recent version
-    git reset --hard //clears old branches
-
-Note: This will completely remove any old branches you've had on your system!
 
 [^1]: You can request specific people to review your Pull Request, which is recommended if you make changes to something that someone else has worked on previously
