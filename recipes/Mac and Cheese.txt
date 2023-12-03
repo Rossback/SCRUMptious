@@ -1,12 +1,12 @@
 Mac and Cheese
 Kraft mac and cheese box$ $ $1$box,
-C:\fakepath\download (1).jpg
-100,0,0
+
+100,0,0,
 American
 0
 dairy,
 5
 Yummy 
 Boil the noodles
-add the cheese 
-Stir and then eat 
+add the cheese
+Stir and then eat
