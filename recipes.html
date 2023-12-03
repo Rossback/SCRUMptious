@@ -9,7 +9,7 @@
   <body>
     <header>
       <nav>
-        <h1>SCRUMptious</h1>
+        <a style="all:unset;cursor:pointer;" href="./index.html"><h1>SCRUMptious</h1></a>
         <a href="./suggestions.html">Suggested</a>
         <a href="./recipes.html">Recipes</a>
         <a href="./calendar.html">Calendar</a>
@@ -18,7 +18,7 @@
     </nav>
     </header>
     <main>
-      <div>
+      <div id="Single"></div>
         <table id="table">           
           <thead>
             <tr>
@@ -33,6 +33,57 @@
           <tbody>
           </tbody>
         </table>
+        <div>
+          <h2 id="formTitle">Add Recipe</h2>
+          <form id="RecipeForm">
+            <div>
+              <label for="recipeName">Name:</label>
+              <input type="text" id="recipeName" required>
+            </div>
+            <div id="ingredients">
+              <button type="button" onclick="addIng()">Add Ingredient</button>
+            </div>
+            <div>
+              <label for="pic">Upload picture:</label>
+              <input type="file" id="pic" name="pic" accept="image/png, image/jpeg" />
+            </div>
+            <div id="nutritional_facts">
+              <label for="Calories">Calories</label>
+              <input type="number" id="Calories">
+
+              <label for="Protein">Grams of Protein:</label>
+              <input type="number" id="Protein">
+
+              <label for="Fat">Grams of Fat:</label>
+              <input type="number" id="Fat">
+            </div>
+            <div>
+              <label for="cuisine">Cuisine type:</label>
+              <input type="text" id="cuisine" required>
+
+              <label for="favorite">Favorite?</label>
+              <input type="checkbox" id="favorite">
+            </div>
+            <div id="Restriction">
+              <button type="button" onclick="addRestriction()">Add Restriction/allergy</button>
+            </div>
+            <div>
+              <label for="difficulty">Difficulty</label>
+              <input type="range" id="difficulty" min="0" max="10" required>
+
+              <label for="review">Description/Review</label>
+              <input type="text" id="review"> 
+            </div>
+            <div id="Instructions">
+              <button type="button" onclick="addInstruction()">Add Step</button>
+            </div>
+            <div id="del">
+            </div>
+            <div id="submit">
+              <button type="button" onclick="createRecipe()">Submit</button>
+            </div>
+          </form>
+        </div>
       </div>
     </main>
     <footer>
@@ -41,6 +92,7 @@
     <script>
         console.log("Script loaded");
         const { ipcRenderer } = require('electron');
+        const fs = require('fs');
 
         document.addEventListener('DOMContentLoaded', (event) => {
           console.log("ready");
@@ -48,12 +100,108 @@
         });
 
         const tableBody = document.querySelector('#table tbody');
+        count = 1;
+        instructionCount = 1;
+        restrictionCount = 1;
+        var oldRecipe = "";
+        isEdit = 0;
       
         // Listen for the recipe data from the main process
         ipcRenderer.on('recipeData', (event, recipe) => {
           console.log('Recipe data received:', recipe);
           updateTable(recipe);
         });
+
+        ipcRenderer.on('recipeDisplay', (event, recipe) => {
+          console.log('Recipe Display received:', recipe);
+          display(recipe);
+        });
+
+        ipcRenderer.on('recipeToEdit', (event, recipe) => {
+          fillForm(recipe);
+        });
+
+        function fillForm(recipe) {
+          count = recipe.ingredients.length;
+          instructionCount = recipe.instructions.length;
+          restrictionCount = recipe.restrictions.length;
+          isEdit = 1;
+          oldRecipe = recipe.title.replace(/(\r\n|\n|\r)/gm,"");
+          document.getElementById('del').innerHTML = `
+          <button type="button" onclick="deleteRecipe('${recipe.title.replace(/(\r\n|\n|\r)/gm,"")}')">Delete</button>
+          `;
+          document.getElementById('formTitle').innerHTML = 'Edit Recipe';
+          document.getElementById('recipeName').value = recipe.title;
+          numIngr = recipe.ingredients.length;
+          document.getElementById('ingredients').innerHTML = `
+          <button type="button" onclick="addIng()">Add Ingredient</button>
+          `;
+          for (i = 1; i < numIngr; i++) {
+            document.getElementById('ingredients').innerHTML += `
+            <div> 
+              <label for="name${i}">Name:</label>
+              <input type="text" id="name${i}">
+              <label for="quantity${i}">Quantity</label>
+              <input type="number" id="quantity${i}"> 
+              <label for="unit${i}">Unit</label>
+              <input type="text" id="unit${i}">
+            </div>`;
+          }
+          for (i = 1; i < numIngr; i++) {
+            document.getElementById(`name${i}`).value = recipe.ingredients[i-1].name;
+            document.getElementById(`quantity${i}`).value = recipe.ingredients[i-1].quantity;
+            document.getElementById(`unit${i}`).value = recipe.ingredients[i-1].measurement;
+          }
+          // document.getElementById('pic').value = recipe.image;
+
+          // const fileInput = document.querySelector('input[type="file"]');
+          // const file = new File ([], recipe.image);
+          // const dataTransfer = new DataTransfer();
+          // dataTransfer.items.add(file);
+          // fileInput.files = dataTransfer.files;
+
+          document.getElementById('Calories').value = recipe.nutrition_facts[0];
+          document.getElementById('Protein').value = recipe.nutrition_facts[1];
+          document.getElementById('Fat').value = recipe.nutrition_facts[2];
+          document.getElementById('cuisine').value = recipe.cuisine;
+
+          if (recipe.favorite == 0) {
+            document.getElementById('favorite').checked = true;
+          }else {
+            document.getElementById('favorite').checked = false;
+          }
+
+          document.getElementById('Restriction').innerHTML = `
+          <button type="button" onclick="addRestriction()">Add Restriction/allergy</button>
+          `;
+          for (i = 1; i < recipe.restrictions.length; i++) {
+            document.getElementById('Restriction').innerHTML += `
+            <div> 
+              <label for="restriction${i}">Restriction (eg. gluten, dairy, etc)</label>
+              <input type="text" id="restriction${i}">
+            </div>`;
+          }
+          for (i = 1; i < recipe.restrictions.length; i++) {
+            document.getElementById(`restriction${i}`).value = recipe.restrictions[i-1];
+          }
+          document.getElementById('difficulty').value = recipe.difficulty;
+          document.getElementById('review').value = recipe.review;
+
+          document.getElementById('Instructions').innerHTML = `
+          <button type="button" onclick="addInstruction()">Add Step</button>
+          `;
+          for (i = 1; i < recipe.instructions.length; i++) {
+            document.getElementById('Instructions').innerHTML += `
+            <div> 
+              <label for="instruction${i}">Step ${i}</label>
+              <input type="text" id="instruction${i}">
+            </div>`;
+          }
+          for (i = 1; i < recipe.instructions.length; i++) {
+            document.getElementById(`instruction${i}`).value = recipe.instructions[i-1];
+          }
+
+        }
 
         function displayRecipe(recipe) {
           console.log("Display single recipe");
@@ -63,6 +211,7 @@
         function updateTable(recipe) {
           const row = tableBody.insertRow();
           favorite = "";
+          title = recipe.title.replace(/(\r\n|\n|\r)/gm,"");
           if (recipe.favorite == 0) {
             favorite = "Yes";
           }else {
@@ -73,10 +222,196 @@
             <td>${recipe.cuisine}</td>
             <td>${favorite}</td>
             <td>${recipe.difficulty}</td>
-            <td><button type="button" onclick="displayRecipe(recipe)">View</button><td>
-            <td><a href="./recipeEdit.html">Edit</a><td>
+            <td><button type="button" onclick="displayRecipe('${title}')">View</button><td>
+            <td><button type="button" onclick="editRecipe('${title}')">Edit</button><td>
           `;
         }
-      </script>
+        function addIng() {
+          // This creates the html for an ingredient input
+          arr = [];
+          for (i = 1; i < count; i++) {
+            arr[i-1] = [document.getElementById(`name${i}`).value, document.getElementById(`quantity${i}`).value, document.getElementById(`unit${i}`).value];
+          }
+          document.getElementById('ingredients').innerHTML += `
+          <div> 
+            <label for="name${count}">Name:</label>
+            <input type="text" id="name${count}">
+            <label for="quantity${count}">Quantity</label>
+            <input type="number" id="quantity${count}"> 
+            <label for="unit${count}">Unit</label>
+            <input type="text" id="unit${count}">
+          </div>`;
+          for (i = 1; i < count; i++) {
+            document.getElementById(`name${i}`).value = arr[i-1][0];
+            document.getElementById(`quantity${i}`).value = arr[i-1][1];
+            document.getElementById(`unit${i}`).value = arr[i-1][2];
+          }
+          count++;
+        }
+
+        function addInstruction() {
+          // This adds the html for an instruction step input 
+          arr = [];
+          for (i = 1; i < instructionCount; i++) {
+            arr[i-1] = document.getElementById(`instruction${i}`).value;
+          }
+          document.getElementById('Instructions').innerHTML += `
+          <div>
+            <label for="instruction${instructionCount}">Step ${instructionCount}</label>
+            <input type="text" id="instruction${instructionCount}">
+          </div>
+          `;
+          for (i = 1; i < instructionCount; i++) {
+            document.getElementById(`instruction${i}`).value = arr[i-1];
+          }
+          instructionCount++;
+        }
+
+        function addRestriction() {
+          arr = [];
+          for (i = 1; i < restrictionCount; i++) {
+            arr[i-1] = document.getElementById(`restriction${i}`).value;
+          }
+          document.getElementById('Restriction').innerHTML += `
+          <div>
+            <label for="restriction${restrictionCount}">Restriction (eg. gluten, dairy, etc)</label> 
+            <input type="text" id="restriction${restrictionCount}">
+          </div>
+          `;
+          for (i = 1; i < restrictionCount; i++) {
+            document.getElementById(`restriction${i}`).value = arr[i-1];
+          }
+          restrictionCount++;
+        }
+
+        function createRecipe() {
+          const isFormValid = document.getElementById('RecipeForm').checkValidity();
+
+          if (isFormValid) {
+            arr = "";
+            if (isEdit == 1) {
+              isEdit = 0;
+              if (oldRecipe != document.getElementById('recipeName').value) {
+                fs.unlinkSync(`./recipes/${oldRecipe}.txt`);
+              }
+            } 
+            const recipeName = document.getElementById('recipeName').value;
+            console.log(recipeName);
+            for (i = 1; i < count; i++) {
+              arr += document.getElementById(`name${i}`).value + "$ $ $" + document.getElementById(`quantity${i}`).value + "$" + document.getElementById(`unit${i}`).value + ",";
+            }
+            const ingredients = arr;
+            const image = document.getElementById('pic').value;
+            const nutritional_facts = "" + document.getElementById('Calories').value + "," + document.getElementById('Protein').value + "," + document.getElementById('Fat').value;
+            const cuisine = document.getElementById('cuisine').value;
+            fav = 1;
+            if (document.getElementById('favorite').checked == true) {
+              fav = 0;
+            }
+            const favorite = fav;
+            arr = "";
+            for (i = 1; i < restrictionCount; i++) {
+              arr += document.getElementById(`restriction${i}`).value + ",";
+            }
+            const restrictions = arr;
+            const difficulty = document.getElementById('difficulty').value;
+            const review = document.getElementById('review').value;
+            arr = "";
+            for (i = 1; i < instructionCount; i++) {
+              arr += document.getElementById(`instruction${i}`).value + "\n";
+            }
+            const instructions = arr;
+
+            newRecipe = [recipeName, ingredients, image, nutritional_facts, cuisine, favorite, restrictions, difficulty, review, instructions];
+            const data = newRecipe.join('\n');
+
+            fs.writeFile(`./recipes/${recipeName}.txt`, data, 'utf8', (err) => {   //write the data to the file
+              if (err) {
+                console.error(err);
+              } else {
+                console.log('Recipe file created successfully.');
+                tableBody.innerHTML = "";
+                ipcRenderer.send('recipePageReady');
+              }
+            });
+            clearForm();
+          } else {
+              alert('Please fill in all required fields.');
+          }
+        }
+
+        function clearForm() {
+          document.getElementById('formTitle').innerHTML = 'Add Recipe';
+            document.getElementById('recipeName').value = '';
+            document.getElementById('ingredients').innerHTML = '<button type="button" onclick="addIng()">Add Ingredient</button>';
+            document.getElementById('pic').value = '';
+            document.getElementById('Calories').value = '';
+            document.getElementById('Protein').value = '';
+            document.getElementById('Fat').value = '';
+            document.getElementById('cuisine').value = '';
+            document.getElementById('favorite').checked = false;
+            document.getElementById('Restriction').innerHTML = '<button type="button" onclick="addRestriction()">Add Restriction/allergy</button>';
+            document.getElementById('difficulty').value = 5;
+            document.getElementById('review').value = '';
+            document.getElementById('Instructions').innerHTML = '<button type="button" onclick="addInstruction()">Add Step</button>';
+            document.getElementById('submit').innerHTML = `<button type="button" onclick="createRecipe()">Submit</button>`;
+            document.getElementById('del').innerHTML = '';
+        }
+
+        function display(recipe) {
+          count = recipe.ingredients.length;
+          instructionCount = recipe.instructions.length;
+          restrictionCount = recipe.restrictions.length;
+          ingredientList = "";
+          restrictionList = "";
+          instructionList = "";
+          fav = "";
+
+          if (recipe.favorite == 0) {
+            fav = "A Favorite";
+          }
+          for (i = 1; i < count; i++) {
+            ingredientList += `<li>${recipe.ingredients[i-1].name}: ${recipe.ingredients[i-1].quantity} ${recipe.ingredients[i-1].measurement}</li>`;
+          }
+          for (i = 1; i < restrictionCount; i++) {
+            restrictionList += `, ${recipe.restrictions[i-1]}`;
+          }
+          for (i = 1; i < instructionCount; i++) {
+            instructionList += `<li>${recipe.instructions[i-1]}</li>`;
+          }
+          document.getElementById('Single').innerHTML = `
+          <h3>${recipe.title}: ${fav}</h3> 
+          <p style: 'color:rgb(200, 200, 200)'>
+            <div>RESTRICTIONS: ${restrictionList}</div>
+            <div>Cuisine: ${recipe.cuisine}, Difficulty: ${recipe.difficulty}, Calories: ${recipe.nutrition_facts[0]}, Grams of Protein: ${recipe.nutrition_facts[1]}, Grams of Fat: ${recipe.nutrition_facts[2]}</div>
+            <div>image</div>
+            <div>Review/Description: ${recipe.review}</div>
+            <h4>Ingredients:</h4>
+            <ul>${ingredientList}</ul>
+            <h4>Instructions:</h4>
+            <ol>${instructionList}</ol>
+          </p>
+          `;
+        }
+
+        function editRecipe(name) {
+          name += '.txt';
+          ipcRenderer.send('editRecipe', name);
+        }
+
+        function deleteRecipe(name) {
+          name += '.txt';
+          fs.unlinkSync(`./recipes/${name}`, (err) => {
+            if (err) {
+                console.error(err);
+            }
+          });
+          tableBody.innerHTML = "";
+          ipcRenderer.send('recipePageReady');
+          clearForm();
+        }
+      
+
+    </script>
   </body>
 </html>
