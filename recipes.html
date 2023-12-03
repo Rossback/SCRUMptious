@@ -18,6 +18,9 @@
     </nav>
     </header>
     <main>
+      <div>
+        <button type="button" onclick="clearForm()">Clear/Cancel</button>
+      </div>
       <div id="Single"></div>
         <table id="table">           
           <thead>
@@ -78,6 +81,7 @@
             </div>
             <div id="submit">
               <button type="button" onclick="createRecipe()">Submit</button>
+              <button type="button" onclick="clearForm()">Clear/Cancel</button>
             </div>
           </form>
         </div>
@@ -339,20 +343,20 @@
         }
 
         function clearForm() {
+          document.getElementById('Single').innerHTML = '';
           document.getElementById('formTitle').innerHTML = 'Add Recipe';
-            document.getElementById('recipeName').value = '';
-            document.getElementById('ingredients').innerHTML = '<button type="button" onclick="addIng()">Add Ingredient</button>';
-            document.getElementById('Calories').value = '';
-            document.getElementById('Protein').value = '';
-            document.getElementById('Fat').value = '';
-            document.getElementById('cuisine').value = '';
-            document.getElementById('favorite').checked = false;
-            document.getElementById('Restriction').innerHTML = '<button type="button" onclick="addRestriction()">Add Restriction/allergy</button>';
-            document.getElementById('difficulty').value = 5;
-            document.getElementById('review').value = '';
-            document.getElementById('Instructions').innerHTML = '<button type="button" onclick="addInstruction()">Add Step</button>';
-            document.getElementById('submit').innerHTML = `<button type="button" onclick="createRecipe()">Submit</button>`;
-            document.getElementById('del').innerHTML = '';
+          document.getElementById('recipeName').value = '';
+          document.getElementById('ingredients').innerHTML = '<button type="button" onclick="addIng()">Add Ingredient</button>';
+          document.getElementById('Calories').value = '';
+          document.getElementById('Protein').value = '';
+          document.getElementById('Fat').value = '';
+          document.getElementById('cuisine').value = '';
+          document.getElementById('favorite').checked = false;
+          document.getElementById('Restriction').innerHTML = '<button type="button" onclick="addRestriction()">Add Restriction/allergy</button>';
+          document.getElementById('difficulty').value = 5;
+          document.getElementById('review').value = '';
+          document.getElementById('Instructions').innerHTML = '<button type="button" onclick="addInstruction()">Add Step</button>';
+          document.getElementById('del').innerHTML = '';
         }
 
         function display(recipe) {
