@@ -7,19 +7,160 @@
     <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <a style="all:unset;cursor:pointer;" href="./index.html"><h1>SCRUMptious</h1></a>
-            <a href="./suggestions.html">Suggested</a>
-            <a href="./recipes.html">Recipes</a>
-            <a href="./calendar.html">Calendar</a>
-            <a href="./groceryList.html">Grocery List</a>
-            <a href="./pantryPage.html">Pantry</a>
-        </nav>
-    </header>
 
-    <main>
-        
-    </main>
+<header>
+    <nav>
+        <a style="all:unset;cursor:pointer;" href="./index.html"><h1>SCRUMptious</h1></a>
+        <a href="./suggestions.html">Suggested</a>
+        <a href="./recipes.html">Recipes</a>
+        <a href="./calendar.html">Calendar</a>
+        <a href="./groceryList.html">Grocery List</a>
+        <a href="./pantryPage.html">Pantry</a>
+    </nav>
+</header>
+
+<main>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody id="groceryTableBody">
+
+        </tbody>
+    </table>
+    
+    <div id='addForm'>
+        <h2>Add Item</h2>
+        <form id="addItemForm">
+            <div style="margin: 15px;">
+                <label for="itemName">Name:</label>
+                <input type="text" id="itemName" required>
+
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" required>
+
+                <button type="button" onclick="createItem()" style="margin-left: 15px;">Create Item</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Edit Form -->
+    <div id="editForm" style="display: none;">
+        <h2>Edit Item</h2>
+        <form id="editItemForm">
+            <div style="margin: 15px;">
+                <label for="editItemName">Name:</label>
+                <input type="text" id="editItemName" required>
+
+                <label for="editQuantity">Quantity:</label>
+                <input type="number" id="editQuantity" required>
+
+                <button type="button" onclick="saveEdit()">Save</button>
+                <button type="button" onclick="cancelEdit()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+
+<script>
+    const { ipcRenderer } = require('electron');
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        ipcRenderer.send('groceryPageReady');
+    });
+
+    const tableBody = document.getElementById("groceryTableBody");
+    lastEdit = "";
+
+    // Listen for the pantry data from the main process
+    ipcRenderer.on('newGroceryData', (event, pantry) => {
+        updateTable(pantry);
+    });
+
+    function updateTable(pantry) {
+        tableBody.innerHTML = '';
+        pantry.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.title}</td>
+                <td>${item.quantity}</td>
+                <td><button onclick="editItem('${item.title}', '${item.quantity}')">Edit</button></td>
+                <td><button onclick="deleteItem('${item.title}')">Delete</button></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function deleteItem(name) {
+        ipcRenderer.send('deletionGrocery', name);
+    }
+
+    function createItem() {
+        const isFormValid = document.getElementById('addItemForm').checkValidity();
+
+        if (isFormValid) {
+            const itemName = document.getElementById('itemName').value;
+            const quantity = document.getElementById('quantity').value;
+
+            if (quantity > 0) {
+                // Create an object or perform any actions with the values
+                const newItem = {
+                    title: itemName,
+                    quantity: quantity
+                };
+
+                // Send the data to the main process or perform any other actions
+                ipcRenderer.send('createNewGroceryItem', newItem);
+
+                document.getElementById('itemName').value = '';
+                document.getElementById('quantity').value = '';
+            }
+        }
+    }
+
+    function editItem(name, quantity) {
+        document.getElementById('addForm').style.display = 'none';
+        // Display the edit form
+        document.getElementById('editForm').style.display = 'block';
+
+        // Set values in the edit form
+        document.getElementById('editItemName').value = name;
+        lastEdit = name;
+        document.getElementById('editQuantity').value = quantity;
+    }
+
+    function saveEdit() {
+        // Get edited values from the edit form
+        const editedName = document.getElementById('editItemName').value;
+        const editedQuantity = document.getElementById('editQuantity').value;
+
+        if (editedQuantity > 0) {
+            // Create an object or perform any actions with the edited values
+            const editedItem = {
+                oldTitle: lastEdit,
+                newTitle: editedName,
+                quantity: editedQuantity
+            };
+
+            // Send the edited data to the main process or perform any other actions
+            ipcRenderer.send('updateGroceryItem', editedItem);
+            document.getElementById('editForm').style.display = 'none';//hide the form
+            document.getElementById('addForm').style.display = 'block';
+        }
+    }
+
+    function cancelEdit() {
+        // Hide the edit form without saving changes
+        document.getElementById('editForm').style.display = 'none';
+        document.getElementById('addForm').style.display = 'block';
+    }
+</script>
+
 </body>
 </html>

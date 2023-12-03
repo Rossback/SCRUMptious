@@ -79,6 +79,37 @@ var recipeArray = []; //store all reciepies
 //ingredient1.name = 'Flour';
 //ingredientArray.push(ingredient1);
 
+function readToDisplay(file, m){ 
+  try {
+    const filePath = directory + file;
+    const data = fs.readFileSync(filePath, 'utf8'); //syncronously read da file
+    arr = data.split("\n"); // split the data into each section 
+    let recipe = new Recipe();
+
+    recipe.title = arr[0];
+    recipe.ingredients = createIngredient(arr[1]);
+    recipe.image = arr[2];    
+    recipe.nutrition_facts = arr[3].split(",");
+    recipe.cuisine = arr[4];
+    recipe.favorite = parseInt(arr[5]);
+    recipe.restrictions = arr[6].split(",");
+    recipe.difficulty = parseInt(arr[7]);
+    recipe.review = arr[8];
+
+    for (let i = 9; i < arr.length; i++) {
+      recipe.instructions.push(arr[i].trim());
+    }
+    if (m == 1) {
+      mainWindow.webContents.send('recipeDisplay', recipe);
+    }else {
+      mainWindow.webContents.send('recipeToEdit', recipe);
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
+}  
+
 
 // reads a file string and turns it into a recipe struct 
 function read_file(file){ 
@@ -171,6 +202,17 @@ function deleteRecipe(index) {
   }
 }
 
+function populateingredients() {
+
+  console.log('hi');
+}
+
+function deleteRecipe(index) {
+  if (index >= 0 && index < recipeArray.length) {
+    recipeArray.splice(index, 1); 
+  }
+}
+
 function createIngredient(data) {
   let list = data.split(",");
   let temp = [];
@@ -187,20 +229,18 @@ function createIngredient(data) {
   }
   return arr;
 }
+
 function deleteingredient(index) {
   if (index >= 0 && index < ingredientArray.length) {
     ingredientArray.splice(index, 1); 
   }
 }
+
 function editingredient(index) {
   if (index >= 0 && index < ingredientArray.length) {
     //ingredientArray[index].
   }
 }
-
-
-
-
 
 
 
@@ -323,6 +363,8 @@ const createWindow = () => {
   ipcMain.on('displayRecipe', (event, file) => {
     readToDisplay(file, 1);
   })
+  
+  //init html files
 
   ipcMain.on('recipePageReady', () => {
     populateRecipies('testRecipe.txt');
