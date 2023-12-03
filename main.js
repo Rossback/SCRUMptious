@@ -235,17 +235,7 @@ function deleteingredient(index) {
     ingredientArray.splice(index, 1); 
   }
 }
-function editingredient(index) {
-  if (index >= 0 && index < ingredientArray.length) {
-    //ingredientArray[index].
-  }
-}
 
-
-  if (index >= 0 && index < ingredientArray.length) {
-    ingredientArray.splice(index, 1); 
-  }
-}
 function editingredient(index) {
   if (index >= 0 && index < ingredientArray.length) {
     //ingredientArray[index].
