@@ -1,131 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar</title>
     <link rel="stylesheet" href="stylesheet.css">
 </head>
-
 <body>
-
     <header>
         <nav>
             <a style="all:unset;cursor:pointer;" href="./index.html"><h1>SCRUMptious</h1></a>
             <a href="./suggestions.html">Suggested</a>
             <a href="./recipes.html">Recipes</a>
+            <a href="./calendar.html">Calendar</a>
             <a href="./groceryList.html">Grocery List</a>
             <a href="./pantryPage.html">Pantry</a>
         </nav>
     </header>
 
     <main>
-        <div id="mealTablesContainer">
-
-        </div>
-
-        <div id='addForm'>
-            <h2>Add Item</h2>
-            <form id="addItemForm">
-                <div style="margin: 15px;">
-                    <label for="mealName">Name:</label>
-                    <input type="text" id="mealName" required>
-
-                    <label for="mealServings">Servings:</label>
-                    <input type="text" id="mealServings" required>
-
-                    <label for="time">Time:</label>
-                    <input type="text" id="time" required>
-
-                    <label for="mealDate">Meal Date:</label>
-                    <input type="date" id="mealDate" required>
-
-                    <button type="button" onclick="createItem()" style="margin-left: 15px;">Create Item</button>
-                </div>
-            </form>
-        </div>
+        <table style="table-layout: fixed;">
+            <tr>
+                <th>Sunday</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+            </tr>
+        </table>
+        <br>
+        <table style="table-layout: fixed;">
+            <tr>
+                <td id="sun_br">Breakfast</td>
+                <td id="mon_br">Breakfast</td>
+                <td id="tue_br">Breakfast</td>
+                <td id="wed_br">Breakfast</td>
+                <td id="thu_br">Breakfast</td>
+                <td id="fri_br">Breakfast</td>
+                <td id="sat_br">Breakfast</td>
+            </tr>
+            <tr>
+                <td id="sun_lu">Lunch</td>
+                <td id="mon_lu">Lunch</td>
+                <td id="tue_lu">Lunch</td>
+                <td id="wed_lu">Lunch</td>
+                <td id="thu_lu">Lunch</td>
+                <td id="fri_lu">Lunch</td>
+                <td id="sat_lu">Lunch</td>
+            </tr>
+            <tr>
+                <td id="sun_di">Dinner</td>
+                <td id="mon_di">Dinner</td>
+                <td id="tue_di">Dinner</td>
+                <td id="wed_di">Dinner</td>
+                <td id="thu_di">Dinner</td>
+                <td id="fri_di">Dinner</td>
+                <td id="sat_di">Dinner</td>
+            </tr>
+        </table>
     </main>
-
-    <script>
-        const { ipcRenderer } = require('electron');
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            ipcRenderer.send('mealPageReady');
-        });
-
-        ipcRenderer.on('newMealData', (event, mealData) => {
-            updateTables(mealData);
-        });
-
-        function updateTables(mealData) {
-            const mealTablesContainer = document.getElementById("mealTablesContainer");
-            mealTablesContainer.innerHTML = ""; // Clear existing content
-
-            mealData.forEach(mealDate => {
-                const table = document.createElement("table");
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Meal Name</th>
-                            <th>Servings</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody id="mealTableBody_${mealDate.date.getTime()}">
-                        ${mealDate.items.map(item => `
-                            <tr>
-                                <td>${mealDate.date.toLocaleDateString()}</td>
-                                <td>${item.time}</td>
-                                <td>${item.name}</td>
-                                <td>${item.servings}</td>
-                                <td><button onclick="deleteItem('${mealDate.date}', '${item.name}', '${item.time}', '${item.servings}')">Delete</button></td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                `;
-                mealTablesContainer.appendChild(table);
-            });
-        }
-
-        function deleteItem(date, name, time, servings) {
-            const newItem = {
-                name: name,
-                servings: servings,
-                time: time,
-                date: date
-            };
-            ipcRenderer.send('deletionMeals', newItem);
-        }
-
-        function createItem() {
-            const isFormValid = document.getElementById('addItemForm').checkValidity();
-
-            if (isFormValid) {
-                const mealName = document.getElementById('mealName').value;
-                const mealServings = document.getElementById('mealServings').value;
-                const time = document.getElementById('time').value;
-                const mealDate = document.getElementById('mealDate').value;
-
-                const newItem = {
-                    name: mealName,
-                    servings: mealServings,
-                    time: time,
-                    date: mealDate
-                };
-
-                ipcRenderer.send('createNewMealItem', newItem);
-
-                document.getElementById('mealName').value = '';
-                document.getElementById('mealServings').value = '';
-                document.getElementById('time').value = '';
-                document.getElementById('mealDate').value = '';
-            }
-        }
-    </script>
-
 </body>
-
 </html>

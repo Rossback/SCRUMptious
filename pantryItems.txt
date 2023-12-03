@@ -2,23 +2,11 @@ Milk
 nutritional facts(healthy, sweat)
 Mon Nov 27 2023 16:00:00 GMT-0800 (Pacific Standard Time)
 27
-fishNew
+fish
 nutritional facts(healthy, sour)
-Thu Nov 30 2023 16:00:00 GMT-0800 (Pacific Standard Time)
+Wed Nov 29 2023 16:00:00 GMT-0800 (Pacific Standard Time)
 5
-jasmin rice
-healthy carbs
-Wed Nov 29 2023 16:00:00 GMT-0800 (Pacific Standard Time)
-55
-ta
-healthy good
-Sat Nov 25 2023 16:00:00 GMT-0800 (Pacific Standard Time)
-3
-tea
-water
-Wed Nov 22 2023 16:00:00 GMT-0800 (Pacific Standard Time)
-100
-Chips
-unhealthy
-Wed Nov 29 2023 16:00:00 GMT-0800 (Pacific Standard Time)
-1
+OnionsNew
+Newnutritional facts(healthy, hot)
+
+4

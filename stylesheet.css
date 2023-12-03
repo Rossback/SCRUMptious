@@ -12,6 +12,13 @@ h1 {
     margin: 10px;
     text-align: center;
     padding: 20px;
+    transition: all 0.2s;
+
+}
+h1:hover {
+    border-radius: 35px;
+    padding: 25px;
+    margin: 5px;
 }
 h1:hover {
     border-radius: 35px;
@@ -69,7 +76,6 @@ table {
     padding: 15px;
     width: 100%;
     text-align: left;
-    margin-bottom: 20px;
 }
 
 div {
@@ -103,6 +109,10 @@ button {
     transition: all 0.2s;
 }
 
+div {
+    margin: 15px;
+}
+
 button:hover, input:hover{
     background-color: rgb(50, 50, 50);
 }
@@ -125,10 +135,9 @@ nav > a:hover {
 }
 
 #Fat, #Calories, #Protein{
-    max-width: 80px;
-        
+    max-width: 80px;       
 }
-    
+
 #favorite {
     display: inline-block;
     vertical-align: middle;
