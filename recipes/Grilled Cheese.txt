@@ -1,9 +1,9 @@
 Grilled Cheese
 Bread$ $ $2$slices,Cheese$ $ $1$cup,Butter$ $ $1$small slice,
 
-300,2,7
+300,2,7,
 American
-1
+0
 gluten,dairy,
 2
 It is yummy 
