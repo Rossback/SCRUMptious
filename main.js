@@ -187,30 +187,12 @@ function populateRecipies() {
     });
   });
 }
-function populateingredients() {
-  console.log('hi');
-}
+
 function setCurrentAccount() {
   const userAccount = new Account();
   userAccount.username = 'TestUser';
   userAccount.picture = 'testpfp.jpg';
   self.currentAccount = userAccount;
-}
-function deleteRecipe(index) {
-  if (index >= 0 && index < recipeArray.length) {
-    recipeArray.splice(index, 1); 
-  }
-}
-
-function populateingredients() {
-
-  console.log('hi');
-}
-
-function deleteRecipe(index) {
-  if (index >= 0 && index < recipeArray.length) {
-    recipeArray.splice(index, 1); 
-  }
 }
 
 function createIngredient(data) {
@@ -229,20 +211,6 @@ function createIngredient(data) {
   }
   return arr;
 }
-
-function deleteingredient(index) {
-  if (index >= 0 && index < ingredientArray.length) {
-    ingredientArray.splice(index, 1); 
-  }
-}
-
-function editingredient(index) {
-  if (index >= 0 && index < ingredientArray.length) {
-    //ingredientArray[index].
-  }
-}
-
-
 
 var pantryList = []; // store all pantry items
 
