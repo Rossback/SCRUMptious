@@ -19,7 +19,48 @@
     </header>
 
     <main>
-        
+        <table id="table">           
+            <thead>
+              <tr>
+                <th>NAME:</th>
+                <th>Cuisine:</th>
+                <th>Difficulty:</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
     </main>
+    <footer>
+        &copy; SOFTWARE 1 GROUP
+      </footer>
+      <script>
+        const { ipcRenderer } = require('electron');
+        const fs = require('fs');
+
+        const tableBody = document.querySelector('#table tbody');
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+          console.log("ready");
+          ipcRenderer.send('recipePageReady');
+        });
+
+        ipcRenderer.on('recipeData', (event, recipe) => {
+          console.log('Recipe data received:', recipe);
+          updateTable(recipe);
+        });
+
+        function updateTable(recipe) {
+          const row = tableBody.insertRow();
+          title = recipe.title.replace(/(\r\n|\n|\r)/gm,"");
+          if (recipe.favorite == 0) {
+            row.innerHTML = `
+            <td>${recipe.title}</td>
+            <td>${recipe.cuisine}</td>
+            <td>${recipe.difficulty}</td>
+          `;
+          }
+        }
+      </script>
 </body>
 </html>
