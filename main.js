@@ -79,6 +79,9 @@ var recipeArray = []; //store all reciepies
 //ingredient1.name = 'Flour';
 //ingredientArray.push(ingredient1);
 
+
+// RECIPE STUFF
+
 function readToDisplay(file, m){ 
   try {
     const filePath = directory + file;
@@ -187,30 +190,12 @@ function populateRecipies() {
     });
   });
 }
-function populateingredients() {
-  console.log('hi');
-}
+
 function setCurrentAccount() {
   const userAccount = new Account();
   userAccount.username = 'TestUser';
   userAccount.picture = 'testpfp.jpg';
   self.currentAccount = userAccount;
-}
-function deleteRecipe(index) {
-  if (index >= 0 && index < recipeArray.length) {
-    recipeArray.splice(index, 1); 
-  }
-}
-
-function populateingredients() {
-
-  console.log('hi');
-}
-
-function deleteRecipe(index) {
-  if (index >= 0 && index < recipeArray.length) {
-    recipeArray.splice(index, 1); 
-  }
 }
 
 function createIngredient(data) {
@@ -230,19 +215,10 @@ function createIngredient(data) {
   return arr;
 }
 
-function deleteingredient(index) {
-  if (index >= 0 && index < ingredientArray.length) {
-    ingredientArray.splice(index, 1); 
-  }
-}
-
-function editingredient(index) {
-  if (index >= 0 && index < ingredientArray.length) {
-    //ingredientArray[index].
-  }
-}
 
 
+
+// PANTRY STUFF
 
 var pantryList = []; // store all pantry items
 
@@ -335,8 +311,7 @@ function updatePantryFile(filePath, pantryList) {
 
 
 
-
-
+// WINDOWS AND LISTENERS
 
 let mainWindow;
 
