@@ -79,6 +79,9 @@ var recipeArray = []; //store all reciepies
 //ingredient1.name = 'Flour';
 //ingredientArray.push(ingredient1);
 
+
+// RECIPE STUFF
+
 function readToDisplay(file, m){ 
   try {
     const filePath = directory + file;
@@ -212,6 +215,11 @@ function createIngredient(data) {
   return arr;
 }
 
+
+
+
+// PANTRY STUFF
+
 var pantryList = []; // store all pantry items
 
 class PantryItem {
@@ -303,8 +311,7 @@ function updatePantryFile(filePath, pantryList) {
 
 
 
-
-
+// WINDOWS AND LISTENERS
 
 let mainWindow;
 
