@@ -10,7 +10,7 @@
 
 <header>
     <nav>
-        <h1>SCRUMptious</h1>
+        <a style="all:unset;cursor:pointer;" href="./index.html"><h1>SCRUMptious</h1></a>
         <a href="./suggestions.html">Suggested</a>
         <a href="./recipes.html">Recipes</a>
         <a href="./calendar.html">Calendar</a>
@@ -73,15 +73,59 @@
 
     document.addEventListener('DOMContentLoaded', (event) => {
         ipcRenderer.send('groceryPageReady');
+        ipcRenderer.send('mealPageReady');
     });
 
     const tableBody = document.getElementById("groceryTableBody");
     lastEdit = "";
+    var dict = {};
 
     // Listen for the pantry data from the main process
     ipcRenderer.on('newGroceryData', (event, pantry) => {
         updateTable(pantry);
     });
+
+    ipcRenderer.on('newMealData', (event, mealData) => {
+        updateTables(mealData);
+    });
+
+    ipcRenderer.on('recipeDisplay', (event, recipe) => {
+        getIngr(recipe);
+    });
+
+    function getIngr(recipe) {
+        recipe.ingredients.forEach(item => {
+            if (item.name.replace(/(\r\n|\n|\r)/gm,"").length < 1) {
+                return;
+            }
+            const row = document.createElement('tr');
+            row.style.padding = "15px";
+            row.innerHTML = `
+                <td style="padding-top: 15px;padding-bottom: 15px;">${item.name}</td>
+                <td>${item.quantity * dict[recipe.title.replace(/(\r\n|\n|\r)/gm,"")]} ${item.measurement}</td>
+                <td id="space">From meal plan</td>
+                <td>Delete from meal plan</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function updateTables(mealData) {
+        dict = {};
+        mealData.forEach(mealDate => {
+            mealDate.items.map(item => {
+                var title = item.name;
+                title += '.txt';
+                if (dict[item.name] === undefined) {
+                    dict[item.name] = item.servings;
+                    ipcRenderer.send('displayRecipe', title);
+                }else {
+                    var current = dict[item.name];
+                    const actual = parseFloat(current) + parseFloat(item.servings);
+                    dict[item.name] = actual;
+                }
+            })});
+    }
 
     function updateTable(pantry) {
         tableBody.innerHTML = '';
@@ -99,6 +143,7 @@
 
     function deleteItem(name) {
         ipcRenderer.send('deletionGrocery', name);
+        ipcRenderer.send('mealPageReady');
     }
 
     function createItem() {
@@ -117,6 +162,7 @@
 
                 // Send the data to the main process or perform any other actions
                 ipcRenderer.send('createNewGroceryItem', newItem);
+                ipcRenderer.send('mealPageReady');
 
                 document.getElementById('itemName').value = '';
                 document.getElementById('quantity').value = '';
@@ -150,6 +196,7 @@
 
             // Send the edited data to the main process or perform any other actions
             ipcRenderer.send('updateGroceryItem', editedItem);
+            ipcRenderer.send('mealPageReady');
             document.getElementById('editForm').style.display = 'none';//hide the form
             document.getElementById('addForm').style.display = 'block';
         }

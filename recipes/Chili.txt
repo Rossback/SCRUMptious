@@ -1,4 +1,4 @@
-Chili 
+Chili
 Beans$ $ $2$cans,Meat$ $ $1$pound,Onions$ $ $1$onion,
 
 250,12,10
