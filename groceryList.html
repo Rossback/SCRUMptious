@@ -99,8 +99,9 @@
                 return;
             }
             const row = document.createElement('tr');
+            row.style.padding = "15px";
             row.innerHTML = `
-                <td>${item.name}</td>
+                <td style="padding-top: 15px;padding-bottom: 15px;">${item.name}</td>
                 <td>${item.quantity * dict[recipe.title.replace(/(\r\n|\n|\r)/gm,"")]} ${item.measurement}</td>
                 <td id="space">From meal plan</td>
                 <td>Delete from meal plan</td>
