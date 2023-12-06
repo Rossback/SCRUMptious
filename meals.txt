@@ -1,4 +1,4 @@
-2023-12-05T12:00:00.000Z
-(Sushi Rolls, 12AM, 3 Servings), (fried rice, 3PM, 2 Servings), (salmon, 7PM, 1 Serving)
 2023-12-06T12:00:00.000Z
-(Garlic bread, 12:10AM, 3 Servings), (Soup, 3:30PM, 2 Servings), (B Soup, 1:30PM, 2), (C Soup, 2:00PM, 1)
+(Broccoli Soup, 6pm, 3), (Mac and Cheese, 12pm, 2)
+2023-12-07T12:00:00.000Z
+(Chili, 5:30pm, 6)

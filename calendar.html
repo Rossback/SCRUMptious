@@ -30,7 +30,8 @@
             <form id="addItemForm">
                 <div style="margin: 15px;">
                     <label for="mealName">Name:</label>
-                    <input type="text" id="mealName" required>
+                    <select id="mealName" name="mealName" required>
+                    </select>
 
                     <label for="mealServings">Servings:</label>
                     <input type="text" id="mealServings" required>
@@ -49,6 +50,7 @@
 
     <script>
         const { ipcRenderer } = require('electron');
+        recipeNames = [];
 
         document.addEventListener('DOMContentLoaded', (event) => {
             ipcRenderer.send('mealPageReady');
@@ -57,6 +59,18 @@
         ipcRenderer.on('newMealData', (event, mealData) => {
             updateTables(mealData);
         });
+
+        ipcRenderer.on('recipeData', (event, recipe) => {
+            fillSelect(recipe);
+        });
+
+        function fillSelect(recipe) {
+            recipe.title.replace(/(\r\n|\n|\r)/gm,"");
+            document.getElementById('mealName').innerHTML += `
+            <option value="${recipe.title}">${recipe.title}</option>
+            `;
+            recipeNames.push(recipe.title);
+        }
 
         function updateTables(mealData) {
             const mealTablesContainer = document.getElementById("mealTablesContainer");
@@ -104,7 +118,8 @@
             const isFormValid = document.getElementById('addItemForm').checkValidity();
 
             if (isFormValid) {
-                const mealName = document.getElementById('mealName').value;
+                var e = document.getElementById('mealName');
+                const mealName = e.options[e.selectedIndex].text;
                 const mealServings = document.getElementById('mealServings').value;
                 const time = document.getElementById('time').value;
                 const mealDate = document.getElementById('mealDate').value;

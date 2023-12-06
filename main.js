@@ -617,7 +617,7 @@ const createWindow = () => {
   
   //init html files
   ipcMain.on('recipePageReady', () => {
-    populateRecipies('testRecipe.txt');
+    populateRecipies();
   });
   ipcMain.on('pantryPageReady', () => {
     read_Pantry_List("pantryItems.txt");
@@ -627,6 +627,7 @@ const createWindow = () => {
   });
   ipcMain.on('mealPageReady', () => {
     read_Meal_List("meals.txt");
+    populateRecipies();
   });
 
   //for pantry methods
