@@ -355,9 +355,6 @@ function add_Grocery_item(newItem) {
 }
 
 function read_weekly_meals(){
- // this function will read the weekly meal list and add ingrediants to the grocery list that are:
- //     1. In the meal list and not in the grocery list or the pantry
- //     2. low quantity items in pantry will also be added.
   change = 0;
   for (let i = 0; i < recipeArray.length; i += 1) {
     for (let j = 0; j < recipeArray[i].ingredients.length; j += 1) {
@@ -365,9 +362,15 @@ function read_weekly_meals(){
       if (index === -1) {
         const indexSec = pantryList.findIndex(item => item.title === recipeArray[i].ingredients[j]);  //find the index
         if (indexSec === -1 || pantryList[indexSec].quantity === 0) {
-          newItem = new GroceryItem(recipeArray[i].ingredients[j], 1);
-          groceryList.push(newItem);
-          change = 1;
+          if (
+            (typeof recipeArray[i].ingredients[j] === 'string' || recipeArray[i].ingredients[j] instanceof String) &&
+            recipeArray[i].ingredients[j].trim() !== '' &&
+            (indexSec === -1 || pantryList[indexSec].quantity === 0)
+          ) {
+            newItem = new GroceryItem(recipeArray[i].ingredients[j], 1);
+            groceryList.push(newItem);
+            change = 1;
+          }
         }
       }
     }
