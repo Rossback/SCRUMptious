@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+    <header>
+    </header>
+    <main>
+        <button type="button" onclick="printRecipe()">Check</button>
+    </main>
+</body>
+<script>
+    console.log("Script loaded");
+    const { ipcRenderer } = require('electron');
+    const fs = require('fs');
+
+    recipeArray = [];
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        console.log("ready");
+        ipcRenderer.send('recipePageReady');
+    });
+
+    ipcRenderer.on('recipeData', (event, recipe) => {
+        console.log('Recipe data received:', recipe);
+        createArray(recipe);
+    });
+    
+    function createArray(recipe) {
+        const recipeObj = {
+            title: recipe.title,
+            ingredients: recipe.ingredients,
+            calories: recipe.nutrition_facts[0],
+            protein: recipe.nutrition_facts[1],
+            fat: recipe.nutrition_facts[2],
+            favorite: recipe.favorite,
+            restrictions: recipe.restrictions,
+            difficulty: recipe.difficulty, 
+            review: recipe.review,
+        }
+        recipeArray.push(recipeObj);
+    }
+
+    function printRecipe() {
+        recipeArray.forEach(item => {
+            console.log(item);
+        });
+    }
+
+</script>
+</html>
