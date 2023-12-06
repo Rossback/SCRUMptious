@@ -2,3 +2,5 @@
 (Broccoli Soup, 6pm, 3), (Mac and Cheese, 12pm, 2)
 2023-12-07T12:00:00.000Z
 (Chili, 5:30pm, 6)
+2023-12-08T12:00:00.000Z
+(Cereal, 8am, 1)

@@ -297,7 +297,11 @@
                 fs.unlinkSync(`./recipes/${oldRecipe}.txt`);
               }
             } 
-            const recipeName = document.getElementById('recipeName').value;
+            var rName = document.getElementById('recipeName').value; 
+            if (rName[rName.length - 1] == " ") {
+              rName = rName.slice(0, -1);
+            }
+            const recipeName = rName;
             console.log(recipeName);
             for (i = 1; i < count; i++) {
               arr += document.getElementById(`name${i}`).value + "$ $ $" + document.getElementById(`quantity${i}`).value + "$" + document.getElementById(`unit${i}`).value + ",";
