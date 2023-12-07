@@ -21,12 +21,20 @@
     <main>
         <div>
             <h2>Select an Account</h2>
-            <table id="accountPrint">
+            <table id="accountDisplay" style="max-width:max-content">
 
             </table>
-            <form id="addAccButton">
-                <input type="text" id="accNameNew" value="" placeholder="Your NEW Name Here" required>
-                <button type="button" onclick="addAccounts()">Add Account</button>
+            <form id="addAcc">
+                <div>
+                    <input type="text" id="accNameNew" value="" placeholder="Your NEW Name Here" required>
+                </div>
+                <div>
+                    <input type="text" id="accAddRestriction" value="" placeholder="Restriction">
+                    <button type="button" onclick="addAccounts()">Add Restriction</button>
+                </div>
+                <div>
+                    <button type="button" onclick="addAccounts()">Add Account</button>
+                </div>
             </form>
         </div>
     </main>
@@ -44,39 +52,45 @@
         
         ipcRenderer.on('accountPrint', (event, account) => {
             console.log('account data received:', account);
-            populateAccounts(file);
+            populateAccounts(account);
         });
 
         ipcRenderer.on('accountSwitch', (event, account) => {
             console.log('switching account to:', account);
-            switchAccounts(file);
+            switchAccounts(account);
         });
 
         ipcRenderer.on('accountAdd', (event, account) => {
             console.log('adding account data:', account);
-            addAccounts(file);
+            addAccounts(account);
         });
 
         ipcRenderer.on('accountRemove', (event, account) => {
             console.log('removing account data:', account);
-            removeAccounts(file);
+            removeAccounts(account);
         });
 
 
 
-        function populateAccounts() {
+        function populateAccounts(account) {
+            const tableList = document.getElementById('accountDisplay');
+            for (let i = 0; i < account.length; i++) {
+                tableList.innerHTML += 
+                `<tr id = accountDisplay${i}>
+                    <td>${account[i].username}</td>
+                </tr>`;
+            }
+        };
+
+        function switchAccounts(account) {
 
         };
 
-        function switchAccounts() {
+        function addAccounts(account) {
 
         };
 
-        function addAccounts() {
-
-        };
-
-        function removeAccounts() {
+        function removeAccounts(account) {
 
         };
 

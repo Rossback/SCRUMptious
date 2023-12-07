@@ -72,6 +72,7 @@ const ingredientArray = [];  //store all ingredients
 let currentAccount = null;  //store current account
 var currentDay = null;  //store the current day
 var recipeArray = []; //store all reciepies
+var accountArray = []; //store accounts
 
 //example to create a new ingredient will look similar to all constructors
 //const ingredient1 = new Ingredient();
@@ -166,10 +167,18 @@ function accountPageReady() {
 function populateAccounts(filePath) {
   const data = fs.readFileSync(filePath, 'utf8'); //syncronously read da file
   arr = data.split("\n"); // split the data into each section 
-  let account = new Account();
-  account.selected = parseInt(arr[0]);
-  account.username = arr[1];
-  account.restrictions = createIngredient(arr[2]);
+  console.log(arr.length);
+  for (let i = 0; i < arr.length/3; console.log(++i)) {
+    console.log(i + " is less than " + arr.length/3);
+    let account = new Account();
+    account.selected = parseInt(arr[0 + (i*3)]);
+    account.username = arr[1 + (i*3)];
+    account.restrictions = arr[2 + (i*3)].split(',');
+    accountArray.push(account);
+    console.log(account);
+  }
+  console.log(accountArray);
+  mainWindow.webContents.send('accountPrint', accountArray);
 }
 
 function switchAccounts(file) {
@@ -184,9 +193,6 @@ function removeAccounts(file) {
   
 }
 
-function createRestrictions(input) {
-
-}
 
 // depricated ---------------------------------------
 // function setCurrentAccount() {
