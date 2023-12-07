@@ -24,8 +24,31 @@
 
         <label for="search">Enter a recipe name or ingredient:</label>
         <input type="text" id="search_query" name="search" placeholder='Enter search query here...'>
-        <button type="button" onclick="searchByNameIngredient()">Submit Search</button>
-        <button type="button" onclick="clearForm()">Clear All</button>
+        
+        <div></div>
+
+        <label for="filter1">Filter for specific cuisine:</label>
+        <input type="text" id="cuisine_filter" name="filter1" placeholder='Enter cuisine type here...'>
+
+        <div></div>
+
+        <label for="filter2">Filter for difficulty range:</label>
+
+        <select name="filter2" id="difficulty_filter">
+            <option value="">*any*</option>
+            <option value="0-5">0-5</option>
+            <option value="6-10">6-10</option>
+            <option value="0-2">0-2</option>
+            <option value="3-4">3-4</option>
+            <option value="5-6">5-6</option>
+            <option value="7-8">7-8</option>
+            <option value="9-10">9-10</option>
+        </select>
+
+        <div></div>
+
+        <button type="button" id="search_button" onclick="searchByNameIngredient()">Submit Search</button>
+        <button type="button" id="clear_button" onclick="clearForm()">Clear All</button>
 
         <div></div>
         <table id="search_result_table">
@@ -94,6 +117,56 @@
     }
 
 
+    // filters for the difficulty range the user selects in a dropdown
+    // called within the search function
+    // returns a filtered search array
+    function filterByDifficulty(recipes) {
+        const filterValue = document.querySelector('#difficulty_filter').value;
+        filterResult = [];
+
+        // checks if it can filter
+        if (filterValue.length == 0 || recipes.length == 0) {
+            return recipes;
+        } 
+        else {
+            low = filterValue.substr(0, 1);
+            high = filterValue.substr(2, filterValue.length-1);
+
+            // check if the difficulty is in the correct range
+            recipes.forEach(item => {
+                if (item.difficulty <= high && item.difficulty >= low) {
+                    filterResult.push(item);
+                }
+            });
+            return filterResult;
+        }
+    }
+
+
+    // filters for the correct cuisine the user specifies as a filter
+    // called within the search function
+    // returns a filtered search array
+    function filterByCuisine(recipes) {
+        const filterValue = document.querySelector("#cuisine_filter").value.toLowerCase();
+        filterResult = [];
+
+        // checks if it can filter 
+        if (filterValue.length == 0 || recipes.length == 0) {
+            return recipes;
+        } 
+        else {
+            recipes.forEach(item => {
+                // check if cuisine matches filter 
+                if (item.cuisine.toLowerCase().includes(filterValue)) {
+                    filterResult.push(item);
+                }
+            });
+            return filterResult;
+        }
+
+    }
+
+
     // takes the user's search and checks all of the recipe titles and ingredients
     // called when the user submits their search textbox
     // returns search results to screen with buttons to allow user to view more details
@@ -127,6 +200,10 @@
                 check = 0;
             }
         });
+
+        // filter the results 
+        searchResult = filterByDifficulty(searchResult);
+        searchResult = filterByCuisine(searchResult);
 
         // if there are no results
         if (searchResult.length == 0) {
@@ -221,6 +298,9 @@
     function clearForm() {
         document.getElementById('Single').innerHTML = '';
         document.getElementById('search_result_table').innerHTML = '';
+        document.getElementById('search_query').value = '';
+        document.getElementById('cuisine_filter').value = '';
+        document.getElementById('difficulty_filter').value = '';
     }
 
 </script>
