@@ -30,7 +30,7 @@
                 </div>
                 <div>
                     <input type="text" id="accAddRestriction" value="" placeholder="Restriction">
-                    <button type="button" onclick="addAccounts()">Add Restriction</button>
+                    <button type="button" onclick="addRestriction()">Add Restriction</button>
                 </div>
                 <div>
                     <button type="button" onclick="addAccounts()">Add Account</button>
@@ -48,7 +48,9 @@
           ipcRenderer.send('accountPageReady');
         });
 
-        const tableBody = document.querySelector('#accountPrint')
+        const tableBody = document.querySelector('#accountPrint');
+
+        let accountList = [];
         
         ipcRenderer.on('accountPrint', (event, account) => {
             console.log('account data received:', account);
@@ -70,28 +72,38 @@
             removeAccounts(account);
         });
 
-
-
         function populateAccounts(account) {
+            accountList = account;
             const tableList = document.getElementById('accountDisplay');
+            tableList.innerHTML = ``;
             for (let i = 0; i < account.length; i++) {
                 tableList.innerHTML += 
                 `<tr id = accountDisplay${i}>
                     <td>${account[i].username}</td>
+                    <td><button type="button" onclick="switchAccounts(${i})">Select</button></td>
+                    <td><button type="button" onclick="removeAccounts(${i})">Delete</button></td>
                 </tr>`;
             }
         };
 
         function switchAccounts(account) {
-
+            for (let i = 0; i < account.length; i++) {
+                accountList[i].selected = 0;
+            }
+            console.log(account + " (" + accountList[account].username + ") is now selected");
         };
 
         function addAccounts(account) {
-
+            console.log("add " + account);
+            accountList.push(account);
+            ipcRenderer.send('accountPageReady');
+            
         };
 
         function removeAccounts(account) {
-
+            console.log("remove " + account);
+            accountList.splice(account, 1);
+            ipcRenderer.send('accountPageReady');
         };
 
     </script>

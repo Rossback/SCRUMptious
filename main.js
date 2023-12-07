@@ -168,6 +168,7 @@ function populateAccounts(filePath) {
   const data = fs.readFileSync(filePath, 'utf8'); //syncronously read da file
   arr = data.split("\n"); // split the data into each section 
   console.log(arr.length);
+  accountArray = [];
   for (let i = 0; i < arr.length/3; console.log(++i)) {
     console.log(i + " is less than " + arr.length/3);
     let account = new Account();
