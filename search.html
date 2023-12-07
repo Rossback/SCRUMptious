@@ -8,28 +8,65 @@
 </head>
 <body>
     <header>
+        <nav>
+            <a style="all:unset;cursor:pointer;" href="./index.html"><h1>SCRUMptious</h1></a>
+            <a href="./suggestions.html">Suggested</a>
+            <a href="./recipes.html">Recipes</a>
+            <a href="./calendar.html">Calendar</a>
+            <a href="./groceryList.html">Grocery List</a>
+            <a href="./pantryPage.html">Pantry</a>
+            <a href="./search.html">Search</a>
+        </nav>
     </header>
+
     <main>
-        <button type="button" onclick="printRecipe()">Check</button>
+        <!--  <button type="button" onclick="printRecipe()">Check</button>   ***used for testing*** -->
+
+        <label for="search">Enter a recipe name or ingredient:</label>
+        <input type="text" id="search_query" name="search" placeholder='Enter search query here...'>
+        <button type="button" onclick="searchByNameIngredient()">Submit Search</button>
+        <button type="button" onclick="clearForm()">Clear All</button>
+
+        <div></div>
+        <table id="search_result_table">
+
+        </table>
+
+        <div id="Single"></div>
     </main>
 </body>
+
 <script>
     console.log("Script loaded");
     const { ipcRenderer } = require('electron');
     const fs = require('fs');
 
+    // global variables
     recipeArray = [];
+    const tableBody = document.getElementById("search_result_table");
 
+    // event listener for when the page is ready
     document.addEventListener('DOMContentLoaded', (event) => {
         console.log("ready");
         ipcRenderer.send('recipePageReady');
     });
 
+    // event handler for creating the recipe array
     ipcRenderer.on('recipeData', (event, recipe) => {
         console.log('Recipe data received:', recipe);
         createArray(recipe);
     });
     
+    // event handler for displaying recipe info
+    ipcRenderer.on('recipeDisplay', (event, recipe) => {
+          console.log('Recipe Display received:', recipe);
+          display(recipe);
+    });
+
+    
+    // creates the recipe array by reading all recipe info into object and pushing it into a global array for the page
+    // called when the page is loaded
+    // returns items to the recipeArray
     function createArray(recipe) {
         const recipeObj = {
             title: recipe.title,
@@ -41,14 +78,149 @@
             restrictions: recipe.restrictions,
             difficulty: recipe.difficulty, 
             review: recipe.review,
+            cuisine: recipe.cuisine,
         }
         recipeArray.push(recipeObj);
     }
 
+
+    // prints the recipes in the recipeArray to the console   ***not used in final product***
+    // called by user clicking a button ***button no longer exists***
+    // returns items to console
     function printRecipe() {
         recipeArray.forEach(item => {
             console.log(item);
         });
+    }
+
+
+    // takes the user's search and checks all of the recipe titles and ingredients
+    // called when the user submits their search textbox
+    // returns search results to screen with buttons to allow user to view more details
+    function searchByNameIngredient() {
+        const textEntry = document.querySelector('#search_query').value.toLowerCase();
+        searchResult = [];
+        ingredientList = [];
+        check = 0;
+
+        // assure the table is empty
+        if (tableBody != '') {
+            document.getElementById('search_result_table').innerHTML = '';
+        }
+
+        recipeArray.forEach(item => {
+            // check if title matches search 
+            if (item.title.toLowerCase().includes(textEntry)) {
+                check = 1;
+            }
+
+            // check if ingredients match search
+            item.ingredients.forEach(ingredient => {  //break up item and its ingredients if need
+                if (ingredient.name.toLowerCase().includes(textEntry)) {
+                    check = 1;
+                }
+            });
+            
+            // if anything matches in the recipe, add it to the results
+            if (check == 1) {
+                searchResult.push(item);
+                check = 0;
+            }
+        });
+
+        // if there are no results
+        if (searchResult.length == 0) {
+            //send 'no result' to table
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <th>No result.</th>
+            `;
+            tableBody.appendChild(row); 
+        }
+        else { // if there are results
+            // create a table row for the headers, and append to the table
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <th>Recipe Name</th>
+                <th>Cuisine</th>
+                <th>Difficulty</th>
+                <th></th>
+            `;
+            tableBody.appendChild(row);
+
+            // create a table row, fill it with desired info and view button, and append to table
+            searchResult.forEach(item => {
+                recipe = item.title.replace(/(\r\n|\n|\r)/gm,"");
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.title}</td>
+                    <td>${item.cuisine}</td>
+                    <td>${item.difficulty}</td>
+                    <td><button type="button" onclick="displayRecipe('${recipe}')">View</button><td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+        }
+
+        // console.log(searchResult);    for testing 
+    }
+
+
+    // links the recipe needing to be displayed with its text doc and triggers an event
+    // called when
+    // returns event and the name of the recipe that needs to be displayed
+    function displayRecipe(name) {
+        name += '.txt';
+        ipcRenderer.send('displayRecipe', name);
+    }
+
+
+    // displays the recipe that was selected in the search results table
+    // called by an event handler
+    // returns the details of a recipe to the screen below the search results table
+    function display(recipe) {
+        count = recipe.ingredients.length;
+        instructionCount = recipe.instructions.length;
+        restrictionCount = recipe.restrictions.length;
+        ingredientList = "";
+        restrictionList = "";
+        instructionList = "";
+        fav = "";
+
+        if (recipe.favorite == 0) {
+            fav = "A Favorite";
+        }
+        for (i = 1; i < count; i++) {
+            ingredientList += `<li>${recipe.ingredients[i-1].name}: ${recipe.ingredients[i-1].quantity} ${recipe.ingredients[i-1].measurement}</li>`;
+        }
+        for (i = 1; i < restrictionCount; i++) {
+            restrictionList += `${recipe.restrictions[i-1]}, `;
+        }
+        for (i = 1; i < instructionCount; i++) {
+            instructionList += `<li>${recipe.instructions[i-1]}</li>`;
+        }
+        document.getElementById('Single').innerHTML = `
+            <h3>${recipe.title}: ${fav}</h3> 
+            <p style: 'color:rgb(200, 200, 200)'>
+                <div>RESTRICTIONS: ${restrictionList}</div>
+                <div>Cuisine: ${recipe.cuisine}, Difficulty: ${recipe.difficulty}, Calories: ${recipe.nutrition_facts[0]}, Grams of Protein: ${recipe.nutrition_facts[1]}, Grams of Fat: ${recipe.nutrition_facts[2]}</div>
+                <div>Review/Description: ${recipe.review}</div>
+                <h4>Ingredients:</h4>
+                <ul>${ingredientList}</ul>
+                <h4>Instructions:</h4>
+                <ol>${instructionList}</ol>
+            </p>
+        `;
+    }
+
+
+    // clears all of the forms except for the search textbox
+    // called when user clicks the clear button
+    // returns nothing
+    function clearForm() {
+        document.getElementById('Single').innerHTML = '';
+        document.getElementById('search_result_table').innerHTML = '';
     }
 
 </script>
