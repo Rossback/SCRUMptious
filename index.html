@@ -19,9 +19,67 @@
     </header>
 
     <main>
-        
+        <div>
+            <h2>Select an Account</h2>
+            <table id="accountPrint">
 
-        
+            </table>
+            <form id="addAccButton">
+                <input type="text" id="accNameNew" value="" placeholder="Your NEW Name Here" required>
+                <button type="button" onclick="addAccounts()">Add Account</button>
+            </form>
+        </div>
     </main>
+    <script>
+        console.log("Script loaded");
+        const { ipcRenderer } = require('electron');
+        const fs = require('fs');
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+          console.log("ready");
+          ipcRenderer.send('accountPageReady');
+        });
+
+        const tableBody = document.querySelector('#accountPrint')
+        
+        ipcRenderer.on('accountPrint', (event, account) => {
+            console.log('account data received:', account);
+            populateAccounts(file);
+        });
+
+        ipcRenderer.on('accountSwitch', (event, account) => {
+            console.log('switching account to:', account);
+            switchAccounts(file);
+        });
+
+        ipcRenderer.on('accountAdd', (event, account) => {
+            console.log('adding account data:', account);
+            addAccounts(file);
+        });
+
+        ipcRenderer.on('accountRemove', (event, account) => {
+            console.log('removing account data:', account);
+            removeAccounts(file);
+        });
+
+
+
+        function populateAccounts() {
+
+        };
+
+        function switchAccounts() {
+
+        };
+
+        function addAccounts() {
+
+        };
+
+        function removeAccounts() {
+
+        };
+
+    </script>
 </body>
 </html>

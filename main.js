@@ -59,10 +59,9 @@ class Calendar {
 
 class Account {
   constructor() {
+    this.selected = 0;
     this.username = '';
-    this.picture = '';
     this.restrictions = [];
-    this.allergies = [];
   }
 }
 
@@ -160,12 +159,42 @@ function populateRecipies() {
   });
 }
 
-function setCurrentAccount() {
-  const userAccount = new Account();
-  userAccount.username = 'TestUser';
-  userAccount.picture = 'testpfp.jpg';
-  self.currentAccount = userAccount;
+function accountPageReady() {
+
 }
+
+function populateAccounts(filePath) {
+  const data = fs.readFileSync(filePath, 'utf8'); //syncronously read da file
+  arr = data.split("\n"); // split the data into each section 
+  let account = new Account();
+  account.selected = parseInt(arr[0]);
+  account.username = arr[1];
+  account.restrictions = createIngredient(arr[2]);
+}
+
+function switchAccounts(file) {
+  
+}
+
+function addAccounts(file) {
+  
+}
+
+function removeAccounts(file) {
+  
+}
+
+function createRestrictions(input) {
+
+}
+
+// depricated ---------------------------------------
+// function setCurrentAccount() {
+//   const userAccount = new Account();
+//   userAccount.username = 'TestUser';
+//   userAccount.picture = 'testpfp.jpg';
+//   self.currentAccount = userAccount;
+// }
 
 function createIngredient(data) {
   let list = data.split(",");
@@ -587,6 +616,9 @@ const createWindow = () => {
   //init html files
   ipcMain.on('recipePageReady', () => {
     populateRecipies();
+  });
+  ipcMain.on('accountPageReady', () => {
+    populateAccounts("accounts.txt");
   });
   ipcMain.on('pantryPageReady', () => {
     read_Pantry_List("pantryItems.txt");
