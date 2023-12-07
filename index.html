@@ -28,9 +28,9 @@
                 <div>
                     <input type="text" id="accNameNew" value="" placeholder="Your NEW Name Here" required>
                 </div>
-                <div>
-                    <input type="text" id="accAddRestriction" value="" placeholder="Restriction">
-                    <button type="button" onclick="addRestriction()">Add Restriction</button>
+                <div id="restrictField">
+                    <button type="button" id="addRestrictButton" onclick="addRestriction()">Add Restriction</button>
+                    <input type="text" id="accAddRestriction0" value="" placeholder="Restriction">
                 </div>
                 <div>
                     <button type="button" onclick="addAccounts()">Add Account</button>
@@ -86,6 +86,12 @@
             }
         };
 
+        function addRestriction() {
+            let allergyList = document.getElementById('restrictField');
+            console.log(allergyList.innerHTML.split('\n'));
+            allergyList.innerHTML += `\n<input type="text" id="accAddRestriction${allergyList.innerHTML.split('\n').length - 3}" value="" placeholder="Restriction">`;
+        }
+
         function switchAccounts(account) {
             for (let i = 0; i < accountList.length; i++) {
                 accountList[i].selected = 0;
@@ -99,10 +105,14 @@
         function addAccounts(account) {
             console.log("add " + account);
             account = new Account();
-            account.selected = parseInt(arr[0 + (i*3)]);
-            account.username = arr[1 + (i*3)];
-            account.restrictions = arr[2 + (i*3)].split(',');
-            accountArray.push(account);
+
+            for (let i = 0; i < accountList.length; i++) {
+                accountList[i].selected = 0;
+            }
+            account.selected = 1;
+
+            account.username = 0;
+            account.restrictions = 0;
             console.log(account);
             accountList.push(account);
             ipcRenderer.send('accountPageReady');
