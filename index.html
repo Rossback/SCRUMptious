@@ -87,14 +87,23 @@
         };
 
         function switchAccounts(account) {
-            for (let i = 0; i < account.length; i++) {
+            for (let i = 0; i < accountList.length; i++) {
                 accountList[i].selected = 0;
             }
+            accountList[account].selected = 1;
             console.log(account + " (" + accountList[account].username + ") is now selected");
+            console.log(accountList);
+            window.location.href = "./suggestions.html";
         };
 
         function addAccounts(account) {
             console.log("add " + account);
+            account = new Account();
+            account.selected = parseInt(arr[0 + (i*3)]);
+            account.username = arr[1 + (i*3)];
+            account.restrictions = arr[2 + (i*3)].split(',');
+            accountArray.push(account);
+            console.log(account);
             accountList.push(account);
             ipcRenderer.send('accountPageReady');
             
