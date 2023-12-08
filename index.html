@@ -27,11 +27,10 @@
             </table>
             <form id="addAcc">
                 <div>
-                    <input type="text" id="accNameNew" value="" placeholder="Your NEW Name Here" required>
+                    <input type="text" id="accNameNew" value="" placeholder="Your NEW Name Here" onkeypress="restrictInput(event)" required>
                 </div>
                 <div id="restrictField">
                     <button type="button" id="addRestrictButton" onclick="addRestriction()">Add Restriction</button>
-                    <input type="text" id="accAddRestriction0" value="" placeholder="Restriction">
                 </div>
                 <div>
                     <button type="button" onclick="addAccounts()">Add Account</button>
@@ -89,8 +88,17 @@
 
         function addRestriction() {
             let allergyList = document.getElementById('restrictField');
+            arr = [];
+            for (let i = 0; i < allergyList.innerHTML.split('\n').length - 3; i++) {
+                console.log("reading " + i);
+                arr[i] = document.getElementById(`accAddRestriction${i}`).value;
+            }
             console.log(allergyList.innerHTML.split('\n'));
-            allergyList.innerHTML += `\n<input type="text" id="accAddRestriction${allergyList.innerHTML.split('\n').length - 3}" value="" placeholder="Restriction">`;
+            allergyList.innerHTML += `\n<input type="text" id="accAddRestriction${allergyList.innerHTML.split('\n').length - 3}" value="" placeholder="Restriction" onkeypress="restrictInput(event)">`;
+            for (let i = 0; i < allergyList.innerHTML.split('\n').length - 4; i++) {
+                console.log("writing " + arr[i] + " to " + i);
+                document.getElementById(`accAddRestriction${i}`).value = arr[i];
+            }
         }
 
         function switchAccounts(account) {
@@ -100,6 +108,7 @@
             accountList[account].selected = 1;
             console.log(account + " (" + accountList[account].username + ") is now selected");
             console.log(accountList);
+            writeAccounts();
             window.location.href = "./suggestions.html";
         };
 
@@ -116,6 +125,7 @@
             account.restrictions = 0;
             console.log(account);
             accountList.push(account);
+            writeAccounts();
             ipcRenderer.send('accountPageReady');
             
         };
@@ -123,8 +133,41 @@
         function removeAccounts(account) {
             console.log("remove " + account);
             accountList.splice(account, 1);
+            writeAccounts();
             ipcRenderer.send('accountPageReady');
         };
+
+        function writeAccounts() {
+            if (document.getElementById('addAcc').checkValidity()) {
+                let allergyList = document.getElementById('restrictField');
+                arr = [];
+                for (let i = 0; i < allergyList.innerHTML.split('\n').length - 3; i++) {
+                    console.log("storing " + i);
+                    arr[i] = document.getElementById(`accAddRestriction${i}`).value;
+                }
+                console.log(arr);
+                //MAKE IT SO STUFF GETS GRABBED FROM THE ACCOUNT ARRAY
+                fs.writeFile(`./accounts.txt`, data, 'utf8', (err) => {   //write the data to the file
+                    if (err) {
+                        console.error(err);
+                    } else {
+                        console.log('Account file updated successfully.');
+                        allergyList.innerHTML = '';
+                    }
+                });
+            } else {
+                alert("Some fields were not filled in, please fill in all fields!");
+            }
+        }
+
+        function restrictInput(event) {
+            const allowedCharacters = /^[a-zA-Z]+$/;
+            const key = event.key;
+
+            if (!allowedCharacters.test(key)) {
+                event.preventDefault();
+            }
+        }
 
     </script>
 </body>
