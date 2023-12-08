@@ -147,8 +147,8 @@
     // called within the search function
     // returns a filtered search array
     function filterByDifficulty(recipes) {
-        const filterValueLow =  pasrseInt(document.querySelector('#difficulty_filter_low').value);
-        const filterValueHigh = pasrseInt(document.querySelector('#difficulty_filter_high').value);
+        const filterValueLow =  parseInt(document.querySelector('#difficulty_filter_low').value);
+        const filterValueHigh = parseInt(document.querySelector('#difficulty_filter_high').value);
         filterResult = [];
 
         // checks if it can filter
@@ -158,7 +158,7 @@
         else {
             // check if the difficulty is in the correct range
             recipes.forEach(item => {
-                if (pasrseInt(item.difficulty) <= filterValueHigh && pasrseInt(item.difficulty) >= filterValueLow) {
+                if (parseInt(item.difficulty) <= filterValueHigh && parseInt(item.difficulty) >= filterValueLow) {
                     filterResult.push(item);
                 }
             });
