@@ -165,21 +165,31 @@ function accountPageReady() {
 }
 
 function populateAccounts(filePath) {
-  const data = fs.readFileSync(filePath, 'utf8'); //syncronously read da file
-  arr = data.split("\n"); // split the data into each section 
-  console.log(arr.length);
-  accountArray = [];
-  for (let i = 0; i < arr.length/3; console.log(++i)) {
-    console.log(i + " is less than " + arr.length/3);
-    let account = new Account();
-    account.selected = parseInt(arr[0 + (i*3)]);
-    account.username = arr[1 + (i*3)];
-    account.restrictions = arr[2 + (i*3)].split(',');
-    accountArray.push(account);
-    console.log(account);
-  }
-  console.log(accountArray);
-  mainWindow.webContents.send('accountPrint', accountArray);
+  arr = [];
+
+  fs.readFile(filePath, 'utf8', (err, data) => {//read da file
+    if (err) {
+      console.error("I had trouble reading the file because: ", err);
+    } else {
+      arr = data.split("\n"); // split the data into each section
+      console.log(arr);
+      console.log(arr);
+      console.log(arr.length + " this should belong");
+      accountArray = [];
+      for (let i = 0; i < arr.length/3; console.log(++i)) {
+        console.log(i + " is less than " + arr.length/3);
+        let account = new Account();
+        account.selected = parseInt(arr[0 + (i*3)]);
+        account.username = arr[1 + (i*3)];
+        account.restrictions = arr[2 + (i*3)].split(',');
+        accountArray.push(account);
+        console.log(account);
+      }
+      console.log(accountArray);
+      mainWindow.webContents.send('accountPrint', accountArray);
+    }
+  }); 
+  
 }
 
 function switchAccounts(file) {
