@@ -8,6 +8,10 @@
 
 This program can be run on Linux, MacOS, or Windows. If you are using Linux, it needs to be a version that has a desktop environment that is supported by Electron and a web browser. All information on installation and running the application are found in the README.md for the project files. This can run on any hardware that supports the previously mentioned operating systems released within the last eight(8) calendar years. They must also support the most recent version of Node JS. Network connectivity is only required to download the application files and install Node JS. You must have a screen larger than 1000(W) x 800(H) for the application to display as intended, but it can be ran on lower resolutions with some visual anomalies. 
 
+### Download git repo
+
+Download the files of the entire Github repository by clicking the greed "Code" button, then click "Download ZIP". After downloading, right click on the ZIP file and extract it.
+
 ### Install Node JS (or update)
 
 Go to [Node.js](https://nodejs.org/en/download/current) to get the most recent version of Node JS and npm (included in Node JS).
