@@ -24,8 +24,27 @@
 
         <label for="search">Enter a recipe name or ingredient:</label>
         <input type="text" id="search_query" name="search" placeholder='Enter search query here...'>
-        <button type="button" onclick="searchByNameIngredient()">Submit Search</button>
-        <button type="button" onclick="clearForm()">Clear All</button>
+        
+        <div></div>
+
+        <label for="filter1">Filter for specific cuisine:</label>
+        <select name="filter1" id="cuisine_filter">
+            <option value="">*any*</option>
+        </select>
+
+        <div id="error"></div>
+
+        <p>
+            <label for="filter2">Filter for difficulty range:</label>
+            <input type="text" id="difficulty_filter_low" name="filter2.1" placeholder='min 0' min="0" max="10">
+            to 
+            <input type="text" id="difficulty_filter_high" name="filter2.2" placeholder='max 10' min="0" max="10">
+        </p>
+
+        <div></div>
+
+        <button type="button" id="search_button" onclick="searchByNameIngredient()">Submit Search</button>
+        <button type="button" id="clear_button" onclick="clearForm()">Clear All</button>
 
         <div></div>
         <table id="search_result_table">
@@ -43,6 +62,7 @@
 
     // global variables
     recipeArray = [];
+    cuisineFilterArray = [];
     const tableBody = document.getElementById("search_result_table");
 
     // event listener for when the page is ready
@@ -63,7 +83,7 @@
           display(recipe);
     });
 
-    
+
     // creates the recipe array by reading all recipe info into object and pushing it into a global array for the page
     // called when the page is loaded
     // returns items to the recipeArray
@@ -81,6 +101,35 @@
             cuisine: recipe.cuisine,
         }
         recipeArray.push(recipeObj);
+
+        if (cuisineFilterArray.length == 0) {
+            // add to array of filters
+            temp = recipeObj.cuisine.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"");
+                cuisineFilterArray.push(temp);
+                // add to filter html
+                document.getElementById('cuisine_filter').innerHTML += `
+                <option value="${temp}">${recipeObj.cuisine}</option>
+                `;
+        }
+        else {
+            check = 1; //pass
+            cuisineFilterArray.forEach(prevFilter => {
+                if (recipeObj.cuisine.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"") == prevFilter) {
+                    check = 0; //bad
+                }
+            });
+
+            if (check == 1) { //pass
+                // add to array of filters
+                megatemp = recipeObj.cuisine.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"");
+                temp = megatemp.replace(" ", "");
+                cuisineFilterArray.push(temp);
+                // add to filter html
+                document.getElementById('cuisine_filter').innerHTML += `
+                <option value="${temp}">${recipeObj.cuisine}</option>
+                `;
+            }
+        }
     }
 
 
@@ -94,6 +143,55 @@
     }
 
 
+    // filters for the difficulty range the user selects in a dropdown
+    // called within the search function
+    // returns a filtered search array
+    function filterByDifficulty(recipes) {
+        const filterValueLow =  parseInt(document.querySelector('#difficulty_filter_low').value);
+        const filterValueHigh = parseInt(document.querySelector('#difficulty_filter_high').value);
+        filterResult = [];
+
+        console.log(filterValueLow, filterValueHigh);
+        // checks if it can filter
+        if (document.querySelector('#difficulty_filter_low').value == "" || document.querySelector('#difficulty_filter_high').value == "" || recipes.length == 0) {
+            return recipes;
+        } 
+        else {
+            // check if the difficulty is in the correct range
+            recipes.forEach(item => {
+                if (parseInt(item.difficulty) <= filterValueHigh && parseInt(item.difficulty) >= filterValueLow) {
+                    filterResult.push(item);
+                }
+            });
+            return filterResult;
+        }
+    }
+
+
+    // filters for the correct cuisine the user specifies as a filter
+    // called within the search function
+    // returns a filtered search array
+    function filterByCuisine(recipes) {
+        const filterValue = document.querySelector("#cuisine_filter").value.toLowerCase();
+        filterResult = [];
+
+        // checks if it can filter 
+        if (filterValue.length == 0 || recipes.length == 0) {
+            return recipes;
+        } 
+        else {
+            recipes.forEach(item => {
+                // check if cuisine matches filter 
+                console.log(item.cuisine.toLowerCase(), filterValue);
+                if (item.cuisine.toLowerCase().includes(filterValue)) {
+                    filterResult.push(item);
+                }
+            });
+            return filterResult;
+        }
+    }
+
+
     // takes the user's search and checks all of the recipe titles and ingredients
     // called when the user submits their search textbox
     // returns search results to screen with buttons to allow user to view more details
@@ -102,66 +200,89 @@
         searchResult = [];
         ingredientList = [];
         check = 0;
+        const low = parseInt(document.querySelector('#difficulty_filter_low').value);
+        const high = parseInt(document.querySelector('#difficulty_filter_high').value);
 
-        // assure the table is empty
-        if (tableBody != '') {
-            document.getElementById('search_result_table').innerHTML = '';
+        // check for errors in difficulty range
+        if (low > high || low < 0 || low > 10 || high < 0 || high > 10 || 
+        (document.querySelector('#difficulty_filter_low').value == "" && document.querySelector('#difficulty_filter_high').value != "") || 
+        (document.querySelector('#difficulty_filter_high').value == "" && document.querySelector('#difficulty_filter_low').value != "")) {
+            document.querySelector('#error').innerHTML = "<p>Invalid Range.</p>";
         }
-
-        recipeArray.forEach(item => {
-            // check if title matches search 
-            if (item.title.toLowerCase().includes(textEntry)) {
-                check = 1;
+        else {
+            // assure the table is empty
+            if (tableBody != '') {
+                document.getElementById('search_result_table').innerHTML = '';
             }
 
-            // check if ingredients match search
-            item.ingredients.forEach(ingredient => {  //break up item and its ingredients if need
-                if (ingredient.name.toLowerCase().includes(textEntry)) {
+            if (document.querySelector('#error').innerHTML != '') {
+                document.querySelector('#error').innerHTML = '';
+            }
+
+            recipeArray.forEach(item => {
+                // check if title matches search 
+                if (item.title.toLowerCase().includes(textEntry)) {
                     check = 1;
                 }
+
+                // check if ingredients match search
+                item.ingredients.forEach(ingredient => {  //break up item and its ingredients if need
+                    if (ingredient.name.toLowerCase().includes(textEntry)) {
+                        check = 1;
+                    }
+                });
+                
+                // if anything matches in the recipe, add it to the results
+                if (check == 1) {
+                    searchResult.push(item);
+                    check = 0;
+                }
             });
-            
-            // if anything matches in the recipe, add it to the results
-            if (check == 1) {
-                searchResult.push(item);
-                check = 0;
-            }
-        });
 
-        // if there are no results
-        if (searchResult.length == 0) {
-            //send 'no result' to table
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <th>No result.</th>
-            `;
-            tableBody.appendChild(row); 
-        }
-        else { // if there are results
-            // create a table row for the headers, and append to the table
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <th>Recipe Name</th>
-                <th>Cuisine</th>
-                <th>Difficulty</th>
-                <th></th>
-            `;
-            tableBody.appendChild(row);
+            // filter the results
+            console.log(searchResult, "before diff");
+            searchResult = filterByDifficulty(searchResult);
+            console.log(searchResult, "after diff, before cuisine");
+            searchResult = filterByCuisine(searchResult);
+            console.log(searchResult, "after filters");
 
-            // create a table row, fill it with desired info and view button, and append to table
-            searchResult.forEach(item => {
-                recipe = item.title.replace(/(\r\n|\n|\r)/gm,"");
+
+            // if there are no results
+            if (searchResult.length == 0) {
+                //send 'no result' to table
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${item.title}</td>
-                    <td>${item.cuisine}</td>
-                    <td>${item.difficulty}</td>
-                    <td><button type="button" onclick="displayRecipe('${recipe}')">View</button><td>
+                    <th>No result.</th>
+                `;
+                tableBody.appendChild(row); 
+            }
+            else { // if there are results
+                // create a table row for the headers, and append to the table
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <th>Recipe Name</th>
+                    <th>Cuisine</th>
+                    <th>Difficulty</th>
+                    <th></th>
                 `;
                 tableBody.appendChild(row);
-            });
 
+                // create a table row, fill it with desired info and view button, and append to table
+                searchResult.forEach(item => {
+                    recipe = item.title.replace(/(\r\n|\n|\r)/gm,"");
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.title}</td>
+                        <td>${item.cuisine}</td>
+                        <td>${item.difficulty}</td>
+                        <td><button type="button" onclick="displayRecipe('${recipe}')">View</button><td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+            }
         }
+        
 
         // console.log(searchResult);    for testing 
     }
@@ -221,6 +342,13 @@
     function clearForm() {
         document.getElementById('Single').innerHTML = '';
         document.getElementById('search_result_table').innerHTML = '';
+        document.getElementById('search_query').value = '';
+        document.getElementById('cuisine_filter').value = '';
+        document.getElementById('difficulty_filter_low').value = '';
+        document.getElementById('difficulty_filter_high').value = '';
+        if (document.querySelector('#error').innerHTML != '') {
+            document.querySelector('#error').innerHTML = '';
+        }
     }
 
 </script>
