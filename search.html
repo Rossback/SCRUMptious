@@ -151,8 +151,9 @@
         const filterValueHigh = parseInt(document.querySelector('#difficulty_filter_high').value);
         filterResult = [];
 
+        console.log(filterValueLow, filterValueHigh);
         // checks if it can filter
-        if (filterValueLow.length == 0 || filterValueLow.length == 0 || recipes.length == 0) {
+        if (document.querySelector('#difficulty_filter_low').value == "" || document.querySelector('#difficulty_filter_high').value == "" || recipes.length == 0) {
             return recipes;
         } 
         else {
@@ -181,6 +182,7 @@
         else {
             recipes.forEach(item => {
                 // check if cuisine matches filter 
+                console.log(item.cuisine.toLowerCase(), filterValue);
                 if (item.cuisine.toLowerCase().includes(filterValue)) {
                     filterResult.push(item);
                 }
@@ -202,7 +204,9 @@
         const high = parseInt(document.querySelector('#difficulty_filter_high').value);
 
         // check for errors in difficulty range
-        if (low > high || low < 0 || low > 10 || high < 0 || high > 10) {
+        if (low > high || low < 0 || low > 10 || high < 0 || high > 10 || 
+        (document.querySelector('#difficulty_filter_low').value == "" && document.querySelector('#difficulty_filter_high').value != "") || 
+        (document.querySelector('#difficulty_filter_high').value == "" && document.querySelector('#difficulty_filter_low').value != "")) {
             document.querySelector('#error').innerHTML = "<p>Invalid Range.</p>";
         }
         else {
@@ -235,9 +239,13 @@
                 }
             });
 
-            // filter the results 
+            // filter the results
+            console.log(searchResult, "before diff");
             searchResult = filterByDifficulty(searchResult);
+            console.log(searchResult, "after diff, before cuisine");
             searchResult = filterByCuisine(searchResult);
+            console.log(searchResult, "after filters");
+
 
             // if there are no results
             if (searchResult.length == 0) {
