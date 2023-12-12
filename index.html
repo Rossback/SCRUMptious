@@ -80,6 +80,7 @@
                 tableList.innerHTML += 
                 `<tr id = accountDisplay${i}>
                     <td>${account[i].username}</td>
+                    <td> Restrictions: ${account[i].restrictions}</td>
                     <td><button type="button" onclick="switchAccounts(${i})">Select</button></td>
                     <td><button type="button" onclick="removeAccounts(${i})">Delete</button></td>
                 </tr>`;

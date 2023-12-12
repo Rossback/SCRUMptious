@@ -2,6 +2,28 @@
 
 **Git Repo for team Scrumptious in CS 361 at Oregon State University!**
 
+## Installation Steps
+
+### Prerequisites
+
+This program can be run on Linux, MacOS, or Windows. If you are using Linux, it needs to be a version that has a desktop environment that is supported by Electron and a web browser. All information on installation and running the application are found in the README.md for the project files. This can run on any hardware that supports the previously mentioned operating systems released within the last eight(8) calendar years. They must also support the most recent version of Node JS. Network connectivity is only required to download the application files and install Node JS. You must have a screen larger than 1000(W) x 800(H) for the application to display as intended, but it can be ran on lower resolutions with some visual anomalies. 
+
+### Install Node JS (or update)
+
+Go to [Node.js](https://nodejs.org/en/download/current) to get the most recent version of Node JS and npm (included in Node JS).
+
+### Install dependencies
+
+Launch the install.* script for your system. If you are on Linux or MacOS, use the one with the .sh suffix. If you are on Windows, use the one with the .ps1 suffix.
+
+### Launch the app
+
+Launch the run.* script for your system. If you are on Linux or MacOS, use the one with the .sh suffix. If you are on Windows, use the one with the .ps1 suffix. (Note: This will open a terminal window that, if closed, will close the application. Do not close this terminal window.)
+
+### Use it!
+
+Add your great great grandma's peach cobbler recipe, your world famous PB & J recipe, or your aunt's spaghetti sauce recipe that you make once a year. Then, use the calendar to schedule when you plan to make these recipes. After meal planning, you can see all the things you need to buy for every recipe added to the calendar. If anything is missing, such as eggnog, you can add that manually to the list. Use the suggested tab if you don't know what you want to eat. If you want to track what you have in your pantry and fridge, you can add what you have into the pantry tab. Finally, use the search tab to find a recipe you added three months ago that started with an S.
+
 ## Github Protocol
 
 ### How to update your local repo to include main changes
