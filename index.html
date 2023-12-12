@@ -20,25 +20,178 @@
     </header>
 
     <main>
-        <h2>Spaghetti alfredo</h2>
-        <p>Espom salt lorem whatever this is supposed to say. </p>
-        <p>Another paragraph that has stuff in it.</p>
-        <h3>Small header for something epic!</h3>
-        <p>What the heck did you just frickin’ say about me, you little whiner? I’ll have you know I graduated top of my class in the Navy Seals, and I’ve been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills.</p>
-        <p>I am trained in gorilla warfare and I’m the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the frick out with precision the likes of which has never been seen before on this Earth, mark my frickin’ words. You think you can get away with saying that crap to me over the Internet?</p>
-        <h3>Cheese is tasty!</h3>
-        <p>Think again, buddy. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, buddy.
-            The storm that wipes out the pathetic little thing you call your life. You’re frickin dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that’s just with my bare hands.
-            Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable butt off the face of the continent, you little poopy-head.
-        </p>
-        <p>If only you could have known what unholy retribution your little “clever” comment was about to bring down upon you, maybe you would have held your stinking tongue.
-            But you couldn’t, you didn’t, and now you’re paying the price, you big jerk. I will rain fury all over you and you will drown in it. You’re in frickin’ trouble, mister.
-        </p>
+        <div>
+            <h2>Select an Account</h2>
+            <table id="accountDisplay" style="max-width:max-content">
 
-        
-            <!-- everything goes here in main -->
-
-        
+            </table>
+            <form id="addAcc">
+                <div>
+                    <input type="text" id="accNameNew" value="" placeholder="Your NEW Name Here" onkeypress="restrictInput(event)" required>
+                </div>
+                <div id="restrictField">
+                    <button type="button" id="addRestrictButton" onclick="addRestriction()">Add Restriction</button>
+                </div>
+                <div>
+                    <button type="button" onclick="addAccounts()">Add Account</button>
+                </div>
+            </form>
+        </div>
     </main>
+    <script>
+        console.log("Script loaded");
+        const { ipcRenderer } = require('electron');
+        const fs = require('fs');
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+          console.log("ready");
+          ipcRenderer.send('accountPageReady');
+        });
+
+        const tableBody = document.querySelector('#accountPrint');
+
+        let accountList = [];
+        
+        ipcRenderer.on('accountPrint', (event, account) => {
+            console.log('account data received:', account);
+            populateAccounts(account);
+        });
+
+        ipcRenderer.on('accountSwitch', (event, account) => {
+            console.log('switching account to:', account);
+            switchAccounts(account);
+        });
+
+        ipcRenderer.on('accountAdd', (event, account) => {
+            console.log('adding account data:', account);
+            addAccounts();
+        });
+
+        ipcRenderer.on('accountRemove', (event, account) => {
+            console.log('removing account data:', account);
+            removeAccounts(account);
+        });
+
+        function populateAccounts(account) {
+            accountList = account;
+            const tableList = document.getElementById('accountDisplay');
+            tableList.innerHTML = ``;
+            for (let i = 0; i < account.length; i++) {
+                tableList.innerHTML += 
+                `<tr id = accountDisplay${i}>
+                    <td>${account[i].username}</td>
+                    <td> Restrictions: ${account[i].restrictions}</td>
+                    <td><button type="button" onclick="switchAccounts(${i})">Select</button></td>
+                    <td><button type="button" onclick="removeAccounts(${i})">Delete</button></td>
+                </tr>`;
+            }
+        };
+
+        function addRestriction() {
+            let allergyList = document.getElementById('restrictField');
+            arr = [];
+            for (let i = 0; i < allergyList.innerHTML.split('\n').length - 3; i++) {
+                console.log("reading " + i);
+                arr[i] = document.getElementById(`accAddRestriction${i}`).value;
+            }
+            console.log(allergyList.innerHTML.split('\n'));
+            allergyList.innerHTML += `\n<input type="text" id="accAddRestriction${allergyList.innerHTML.split('\n').length - 3}" value="" placeholder="Restriction" onkeypress="restrictInput(event)">`;
+            for (let i = 0; i < allergyList.innerHTML.split('\n').length - 4; i++) {
+                console.log("writing " + arr[i] + " to " + i);
+                document.getElementById(`accAddRestriction${i}`).value = arr[i];
+            }
+        }
+
+        function switchAccounts(account) {
+            for (let i = 0; i < accountList.length; i++) {
+                accountList[i].selected = 0;
+            }
+            accountList[account].selected = 1;
+            console.log(account + " (" + accountList[account].username + ") is now selected");
+            console.log(accountList);
+            writeAccounts('');
+            window.location.href = "./suggestions.html";
+        };
+
+        function addAccounts() {
+            let allergyList = document.getElementById('restrictField');
+            arr = [];
+            for (let i = 0; i < allergyList.innerHTML.split('\n').length - 3; i++) {
+                console.log("storing " + i);
+                arr[i] = document.getElementById(`accAddRestriction${i}`).value;
+            }
+            console.log(arr);
+            if (document.getElementById('addAcc').checkValidity()) {
+                for (let i = 0; i < accountList.length; i++) {
+                    accountList[i].selected = 0;
+                }
+                accountWriting = `1\n${document.getElementById("accNameNew").value}\n`;
+                allergyStore = '';
+                for (let i = 0; i < arr.length; i++) {
+                    if (arr[i].length !== 0) {
+                        if (allergyStore.length == 0) {
+                            allergyStore += arr[i];
+                        } else {
+                            allergyStore += ',' + arr[i];
+                        }
+                    }
+                }
+                accountWriting += allergyStore;
+                console.log(accountWriting);
+                writeAccounts(accountWriting);
+                ipcRenderer.send('accountPageReady');
+                window.location.href = "./suggestions.html";
+            } else {
+                alert("Some fields were not filled in, please fill in all fields!");
+            }
+        };
+
+        function removeAccounts(account) {
+            console.log("remove " + account);
+            accountList.splice(account, 1);
+            writeAccounts('');
+            ipcRenderer.send('accountPageReady');
+        };
+
+        function writeAccounts(newAcc) {
+            let allergyList = document.getElementById('restrictField');
+            let accountWrite = [];
+            for (let i = 0; i < accountList.length; i++) {
+                accountWrite.push(accountList[i].selected);
+                accountWrite.push(accountList[i].username);
+                accountWrite.push(accountList[i].restrictions);
+            }
+            if (newAcc.length !== 0) {
+                accountWrite.push(newAcc);
+            }
+            console.log(accountWrite + " is getting parsed and sent");
+            const data = accountWrite.join('\n');
+            console.log(data + " is parsed and sending");
+
+            fs.writeFile(`./accounts.txt`, data, 'utf8', (err) => {   //write the data to the file
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log('Account file updated successfully.');
+                    console.log(data);
+                    allergyList.innerHTML = `
+                    <button type="button" id="addRestrictButton" onclick="addRestriction()">Add Restriction</button>
+                    `;
+                }
+            });
+            window.location.href = "./index.html";
+            
+        }
+
+        function restrictInput(event) {
+            const allowedCharacters = /^[a-zA-Z\s]+$/;
+            const key = event.key;
+
+            if (!allowedCharacters.test(key)) {
+                event.preventDefault();
+            }
+        }
+
+    </script>
 </body>
 </html>
