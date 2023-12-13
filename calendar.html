@@ -90,18 +90,23 @@
                             <th>Delete</th>
                         </tr>
                     </thead>
-                    <tbody id="mealTableBody_${mealDate.date.getTime()}">
-                        ${mealDate.items.map(item => `
-                            <tr>
-                                <td>${mealDate.date.toLocaleDateString()}</td>
-                                <td>${item.time}</td>
-                                <td>${item.name}</td>
-                                <td>${item.servings}</td>
-                                <td><button onclick="deleteItem('${mealDate.date}', '${item.name}', '${item.time}', '${item.servings}')">Delete</button></td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                `;
+                    <tbody id="mealTableBody_${mealDate.date.getTime()}"></tbody>`;
+                tbody = table.getElementsByTagName('tbody');        
+                mealDate.items.map(item => {
+                    if (recipeNames.includes(item.name)) {  
+                        tbody.innerHTML += `
+                    <tr>
+                        <td>${mealDate.date.toLocaleDateString()}</td>
+                        <td>${item.time}</td>
+                        <td>${item.name}</td>
+                        <td>${item.servings}</td>
+                        <td><button onclick="deleteItem('${mealDate.date}', '${item.name}', '${item.time}', '${item.servings}')">Delete</button></td>
+                    </tr>`;
+                    }else {
+                        deleteItem('${mealDate.date}', '${item.name}', '${item.time}', '${item.servings}');
+                    }
+                    
+                });
                 mealTablesContainer.appendChild(table);
             });
         }
