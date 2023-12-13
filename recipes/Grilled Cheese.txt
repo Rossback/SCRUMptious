@@ -4,7 +4,7 @@ Bread$ $ $2$slices,Cheese$ $ $1$cup,Butter$ $ $1$small slice,
 300,2,7,
 American
 0
-gluten,dairy,
+gluten,dairy,cheese,
 2
 It is yummy 
 Construct Sandwich
