@@ -4,7 +4,7 @@ Kraft mac and cheese box$ $ $1$box,
 100,0,0,
 American
 0
-dairy,
+dairy,cheese,
 10
 Yummy 
 Boil the noodles

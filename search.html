@@ -36,9 +36,9 @@
 
         <p>
             <label for="filter2">Filter for difficulty range:</label>
-            <input type="text" id="difficulty_filter_low" name="filter2.1" placeholder='min 0' min="0" max="10">
+            <input type="text" id="difficulty_filter_low" name="filter2.1" min="0" max="10" value="0">
             to 
-            <input type="text" id="difficulty_filter_high" name="filter2.2" placeholder='max 10' min="0" max="10">
+            <input type="text" id="difficulty_filter_high" name="filter2.2" min="0" max="10" value="10">
         </p>
 
         <div></div>
@@ -62,12 +62,21 @@
 
     // global variables
     recipeArray = [];
+    selectedAccount = [];
     cuisineFilterArray = [];
     const tableBody = document.getElementById("search_result_table");
 
     // event listener for when the page is ready
     document.addEventListener('DOMContentLoaded', (event) => {
         console.log("ready");
+        ipcRenderer.send('accountPageReady');
+        
+    });
+
+    // need 
+    ipcRenderer.on('accountPrint', (event, account) => {
+        console.log('account data received:', account);
+        getCurrentAccount(account);
         ipcRenderer.send('recipePageReady');
     });
 
@@ -84,10 +93,23 @@
     });
 
 
+    function getCurrentAccount(account) {
+        // retrieve the everything 
+        console.log(account);
+        account.forEach( acc => {
+            if (acc.selected == 1) {
+                selectedAccount = acc; 
+            }     
+        })
+    }
+
+
     // creates the recipe array by reading all recipe info into object and pushing it into a global array for the page
     // called when the page is loaded
     // returns items to the recipeArray
     function createArray(recipe) {
+        restrictCheck = 0;
+
         const recipeObj = {
             title: recipe.title,
             ingredients: recipe.ingredients,
@@ -100,36 +122,56 @@
             review: recipe.review,
             cuisine: recipe.cuisine,
         }
-        recipeArray.push(recipeObj);
 
-        if (cuisineFilterArray.length == 0) {
-            // add to array of filters
-            temp = recipeObj.cuisine.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"");
-                cuisineFilterArray.push(temp);
-                // add to filter html
-                document.getElementById('cuisine_filter').innerHTML += `
-                <option value="${temp}">${recipeObj.cuisine}</option>
-                `;
-        }
-        else {
-            check = 1; //pass
-            cuisineFilterArray.forEach(prevFilter => {
-                if (recipeObj.cuisine.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"") == prevFilter) {
-                    check = 0; //bad
+        //check if dietary restrictions match. skip the rest if so
+        //console.log(selectedAccount);
+        // for each restriction item in selected account, check each ingredient against current restriction if bad: restrictionCheck = 1; then dont push the recipe
+        selectedAccount.restrictions.forEach(item => {
+            if (item != '') {
+                for (i = 0; i < recipeObj.restrictions.length; i++) {
+                    //console.log(item.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,""), recipeObj.restrictions[i].toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,""))
+                    temporary = item.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"");
+                    if (recipeObj.restrictions[i].toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"").includes(temporary)) {
+                        restrictCheck = 1;
+                    }
                 }
-            });
+            }
+        });
+        
+        console.log(restrictCheck)
+        if (restrictCheck == 0) {  //if there are no restricted ingredients in the recipe, add it to the array and cuisine dropdown.
+            recipeArray.push(recipeObj);
 
-            if (check == 1) { //pass
+            if (cuisineFilterArray.length == 0) {
                 // add to array of filters
-                megatemp = recipeObj.cuisine.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"");
-                temp = megatemp.replace(" ", "");
-                cuisineFilterArray.push(temp);
-                // add to filter html
-                document.getElementById('cuisine_filter').innerHTML += `
-                <option value="${temp}">${recipeObj.cuisine}</option>
-                `;
+                temp = recipeObj.cuisine.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"");
+                    cuisineFilterArray.push(temp);
+                    // add to filter html
+                    document.getElementById('cuisine_filter').innerHTML += `
+                    <option value="${temp}">${recipeObj.cuisine}</option>
+                    `;
+            }
+            else {
+                check = 1; //pass
+                cuisineFilterArray.forEach(prevFilter => {
+                    if (recipeObj.cuisine.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"") == prevFilter) {
+                        check = 0; //bad
+                    }
+                });
+
+                if (check == 1) { //pass
+                    // add to array of filters
+                    megatemp = recipeObj.cuisine.toLowerCase().replace(/(\r\n|\n| \r|\r)/gm,"");
+                    temp = megatemp.replace(" ", "");
+                    cuisineFilterArray.push(temp);
+                    // add to filter html
+                    document.getElementById('cuisine_filter').innerHTML += `
+                    <option value="${temp}">${recipeObj.cuisine}</option>
+                    `;
+                }
             }
         }
+
     }
 
 
@@ -151,7 +193,7 @@
         const filterValueHigh = parseInt(document.querySelector('#difficulty_filter_high').value);
         filterResult = [];
 
-        console.log(filterValueLow, filterValueHigh);
+        //console.log(filterValueLow, filterValueHigh);
         // checks if it can filter
         if (document.querySelector('#difficulty_filter_low').value == "" || document.querySelector('#difficulty_filter_high').value == "" || recipes.length == 0) {
             return recipes;
@@ -182,7 +224,7 @@
         else {
             recipes.forEach(item => {
                 // check if cuisine matches filter 
-                console.log(item.cuisine.toLowerCase(), filterValue);
+                //console.log(item.cuisine.toLowerCase(), filterValue);
                 if (item.cuisine.toLowerCase().includes(filterValue)) {
                     filterResult.push(item);
                 }
@@ -240,11 +282,11 @@
             });
 
             // filter the results
-            console.log(searchResult, "before diff");
+            //console.log(searchResult, "before diff");
             searchResult = filterByDifficulty(searchResult);
-            console.log(searchResult, "after diff, before cuisine");
+            //console.log(searchResult, "after diff, before cuisine");
             searchResult = filterByCuisine(searchResult);
-            console.log(searchResult, "after filters");
+            //console.log(searchResult, "after filters");
 
 
             // if there are no results
