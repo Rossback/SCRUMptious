@@ -80,6 +80,7 @@
     const tableBody = document.getElementById("groceryTableBody");
     lastEdit = "";
     var dict = {};
+    var itemsDict = {};
 
     // Listen for the pantry data from the main process
     ipcRenderer.on('newGroceryData', (event, pantry) => {
@@ -131,6 +132,14 @@
     function updateTable(pantry) {
         tableBody.innerHTML = '';
         pantry.forEach(item => {
+            const itemName = item.title.toLowerCase().replace(/(\r\n|\n|\r)/gm,"");
+            if (itemsDict[itemName] === undefined) {
+                itemsDict[itemName] = item.quantity;
+            }else {
+                var current = dict[item.name];
+                const actual = parseFloat(current) + parseFloat(item.quantity);
+                itemsDict[itemName] = actual;
+            }
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${item.title}</td>
