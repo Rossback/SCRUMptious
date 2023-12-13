@@ -4,6 +4,6 @@ Cereal $ $ $1$box,Milk$ $ $1$box,
 12,0,0,
 American 
 1
-
+dairy,
 0
 
