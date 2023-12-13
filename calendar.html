@@ -71,7 +71,7 @@
             document.getElementById('mealName').innerHTML += `
             <option value="${recipe.title}">${recipe.title}</option>
             `;
-            recipeNames.push(recipe.title);
+            recipeNames.push(recipe.title.replace(/(\r\n|\n|\r)/gm,""));
         }
 
         function updateTables(mealData) {
@@ -91,19 +91,19 @@
                         </tr>
                     </thead>
                     <tbody id="mealTableBody_${mealDate.date.getTime()}"></tbody>`;
-                tbody = table.getElementsByTagName('tbody');        
+                const tbody = table.getElementsByTagName('tbody')[0];        
                 mealDate.items.map(item => {
                     if (recipeNames.includes(item.name)) {  
                         tbody.innerHTML += `
-                    <tr>
-                        <td>${mealDate.date.toLocaleDateString()}</td>
-                        <td>${item.time}</td>
-                        <td>${item.name}</td>
-                        <td>${item.servings}</td>
-                        <td><button onclick="deleteItem('${mealDate.date}', '${item.name}', '${item.time}', '${item.servings}')">Delete</button></td>
-                    </tr>`;
+                            <tr>
+                                <td>${mealDate.date.toLocaleDateString()}</td>
+                                <td>${item.time}</td>
+                                <td>${item.name}</td>
+                                <td>${item.servings}</td>
+                                <td><button onclick="deleteItem('${mealDate.date}', '${item.name}', '${item.time}', '${item.servings}')">Delete</button></td>
+                            </tr>`;
                     }else {
-                        deleteItem('${mealDate.date}', '${item.name}', '${item.time}', '${item.servings}');
+                        deleteItem(mealDate.date, item.name, item.time, item.servings);
                     }
                     
                 });
