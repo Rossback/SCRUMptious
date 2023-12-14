@@ -608,7 +608,7 @@ let mainWindow;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 960,
+    width: 1000,
     height: 600,
     webPreferences: {
       nodeIntegration: true,
